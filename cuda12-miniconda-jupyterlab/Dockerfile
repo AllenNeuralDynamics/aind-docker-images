@@ -36,5 +36,5 @@ ENV PATH "${CONDA_DIR}/bin:$PATH"
 RUN conda config --system --set auto_update_conda false \
   && conda config --system --set show_channel_urls true
 
-RUN pip install -U --no-cache-dir jupyterlab
+RUN pip install -U --no-cache-dir jupyterlab jupyter notebook
 
