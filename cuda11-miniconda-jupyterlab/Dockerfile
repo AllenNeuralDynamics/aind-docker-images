@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.1.1-runtime-ubuntu22.04
+FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04
 LABEL maintainer "David Feng <david.feng@alleninstitute.org>"
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -36,5 +36,5 @@ ENV PATH "${CONDA_DIR}/bin:$PATH"
 RUN conda config --system --set auto_update_conda false \
   && conda config --system --set show_channel_urls true
 
-RUN pip install -U --no-cache-dir jupyterlab
+RUN pip install -U --no-cache-dir jupyterlab jupyter notebook
 
