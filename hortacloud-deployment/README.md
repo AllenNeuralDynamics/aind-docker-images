@@ -12,4 +12,4 @@ Refer to hortacloud [deployment instructions](https://hortacloud.janelia.org/doc
 - Set up AWS credentials environment variables using the values from the the previous step.
 - Run `git clone **https://github.com/JaneliaSciComp/hortacloud/**.
 - In the cloned **hortacloud** folder, create/copy the **.env** file that contains all the required environment variables. If the **.env** variable is stored in a bucket, you can run `aws s3 cp s3://BUCKET_NAME/.env .env` to download it.
-
+- Follow the hortacloud deployment instructions for the remaining steps.
