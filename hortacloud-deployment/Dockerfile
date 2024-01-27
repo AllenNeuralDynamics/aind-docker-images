@@ -9,3 +9,5 @@ RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2
     rm awscliv2.zip
 
 RUN npm install -g aws-cdk
+
+RUN mkdir /horta_build
