@@ -44,9 +44,6 @@ jobs:
         echo "Updating version number in ${docker_file}"
         new_docker_file_line="# v${new_version}"
         sed -i "1s/.*/$new_docker_file_line/" ${docker_file}
-      else
-        echo "No changes in hortacloud-deployment"
-      fi
     - name: Commit and Push version bump
       uses: EndBug/add-and-commit@v9
       with:
