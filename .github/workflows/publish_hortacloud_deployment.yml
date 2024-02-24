@@ -13,7 +13,7 @@ jobs:
     name: Bump version
     runs-on: ubuntu-latest
     outputs:
-      new_version: ${{ steps.output_version.outputs.new_version }}
+      new_version: ${{ steps.update_dockerfile.outputs.new_version }}
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -22,6 +22,7 @@ jobs:
         fetch-depth: 0
         token: ${{ secrets.SERVICE_TOKEN }}
     - name: Check changes and bump version in file
+      id: update_dockerfile
       run: |
         docker_file=${{ env.DOCKERFILE_PATH }}
         first_line=$(head -n 1 $docker_file)
