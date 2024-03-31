@@ -1,13 +1,13 @@
-name: Publish aind_airflow_extra
+name: Publish aind_airflow
 on:
   push:
     branches:
       - main
     paths:
-      - aind-airflow-extra/**
+      - aind-airflow/**
 env:
-    DOCKERFILE_DIR: ./aind-airflow-extra
-    DOCKERFILE_PATH: ./aind-airflow-extra/Dockerfile
+    DOCKERFILE_DIR: ./aind-airflow
+    DOCKERFILE_PATH: ./aind-airflow/Dockerfile
 jobs:
   bump_version:
     name: Bump version
@@ -74,5 +74,5 @@ jobs:
           context: ${{ env.DOCKERFILE_DIR }}
           push: true
           tags: |
-            ghcr.io/allenneuraldynamics/aind-airflow-extra:${{ needs.bump_version.outputs.new_version }}
-            ghcr.io/allenneuraldynamics/aind-airflow-extra:latest
+            ghcr.io/allenneuraldynamics/aind-airflow:${{ needs.bump_version.outputs.new_version }}
+            ghcr.io/allenneuraldynamics/aind-airflow:latest
