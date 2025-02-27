@@ -32,8 +32,8 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           # relative path to the place where source code with Dockerfile is located
-          context: ./{{ env.IMAGE_NAME }}
+          context: ./${{ env.IMAGE_NAME }}
           push: true
           tags: |
-            ghcr.io/allenneuraldynamics/{{ env.IMAGE_NAME }}:${{ env.docker_tag }}
-            ghcr.io/allenneuraldynamics/{{ env.IMAGE_NAME }}:latest
+            ghcr.io/allenneuraldynamics/${{ env.IMAGE_NAME }}:${{ env.docker_tag }}
+            ghcr.io/allenneuraldynamics/${{ env.IMAGE_NAME }}:latest
