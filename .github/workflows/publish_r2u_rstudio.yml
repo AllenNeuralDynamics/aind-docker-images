@@ -2,10 +2,10 @@ name: Publish r2u-rstudio
 on:
   push:
     branches:
-      - ci-8-autodeploy-images
-    # paths:
-    #   - r2u-rstudio/**
-    #   - .github/workflows/publish_r2u_rstudio.yml
+      - main
+    paths:
+      - r2u-rstudio/**
+      - .github/workflows/publish_r2u_rstudio.yml
 
 env:
   IMAGE_NAME: r2u-rstudio

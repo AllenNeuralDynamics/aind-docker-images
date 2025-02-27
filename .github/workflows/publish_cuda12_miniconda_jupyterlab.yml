@@ -8,7 +8,7 @@ on:
       - .github/workflows/publish_cuda12_miniconda_jupyterlab.yml
 
 env:
-  DOCKERFILE_DIR: ./cuda12-miniconda-jupyterlab
+  IMAGE_NAME: cuda12-miniconda-jupyterlab
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -32,8 +32,8 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           # relative path to the place where source code with Dockerfile is located
-          context: ${{ env.DOCKERFILE_DIR }}
+          context: ./${{ env.IMAGE_NAME }}
           push: true
           tags: |
-            ghcr.io/allenneuraldynamics/aind-docker-images:${{ env.docker_tag }}
-            ghcr.io/allenneuraldynamics/aind-docker-images:latest
+            ghcr.io/allenneuraldynamics/${{ env.IMAGE_NAME }}:${{ env.docker_tag }}
+            ghcr.io/allenneuraldynamics/${{ env.IMAGE_NAME }}:latest
