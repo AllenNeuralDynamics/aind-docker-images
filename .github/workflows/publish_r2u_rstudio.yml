@@ -5,7 +5,6 @@ on:
       - main
     paths:
       - r2u-rstudio/**
-      - .github/workflows/publish_r2u_rstudio.yml
   workflow_dispatch:
 
 

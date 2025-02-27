@@ -5,7 +5,6 @@ on:
       - main
     paths:
       - lightning-jupyterlab/**
-      - .github/workflows/publish_lightning_jupyterlab.yml
   workflow_dispatch:
 
 env:
