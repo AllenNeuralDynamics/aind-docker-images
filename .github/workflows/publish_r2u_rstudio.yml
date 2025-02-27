@@ -6,6 +6,8 @@ on:
     paths:
       - r2u-rstudio/**
       - .github/workflows/publish_r2u_rstudio.yml
+  workflow_dispatch:
+
 
 env:
   IMAGE_NAME: r2u-rstudio

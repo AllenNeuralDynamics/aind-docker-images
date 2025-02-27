@@ -6,6 +6,7 @@ on:
     paths:
       - pytorch-tensorflow-jax/**
       - .github/workflows/publish_pytorch_tensorflow_jax.yml
+  workflow_dispatch:
 
 env:
   IMAGE_NAME: pytorch-tensorflow-jax

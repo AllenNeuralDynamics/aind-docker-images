@@ -6,6 +6,7 @@ on:
     paths:
       - cuda12-miniconda-jupyterlab/**
       - .github/workflows/publish_cuda12_miniconda_jupyterlab.yml
+  workflow_dispatch:
 
 env:
   IMAGE_NAME: cuda12-miniconda-jupyterlab
