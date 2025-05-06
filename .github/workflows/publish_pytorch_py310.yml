@@ -1,4 +1,4 @@
-name: Publish r2u-rstudio
+name: Publish pytorch-py310
 on:
   push:
     branches:
