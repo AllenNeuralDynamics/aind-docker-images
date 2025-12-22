@@ -7,8 +7,6 @@ on:
       - iamra-signing-helper/**
   workflow_dispatch:
 
-env:
-  IMAGE_NAME: iamra-signing-helper
 jobs:
   get-docker-tag:
     runs-on: ubuntu-latest
@@ -26,6 +24,6 @@ jobs:
     needs: get-docker-tag
     uses: AllenNeuralDynamics/.github/.github/workflows/release-publish-docker-image.yml@main
     with:
-      working-directory: ./${{ env.IMAGE_NAME }}
+      working-directory: ./iamra-signing-helper
       docker-tag: ${{ needs.get-docker-tag.outputs.docker_tag }}
-      image-name: ${{ env.IMAGE_NAME }}
+      image-name: iamra-signing-helper
