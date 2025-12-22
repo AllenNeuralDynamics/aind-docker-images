@@ -27,3 +27,5 @@ jobs:
       working-directory: ./iamra-signing-helper
       docker-tag: ${{ needs.get-docker-tag.outputs.docker_tag }}
       image-name: iamra-signing-helper
+    secrets:
+      repo-token: ${{ secrets.GITHUB_TOKEN }}
