@@ -3,8 +3,8 @@ on:
   push:
     branches:
       - feat-iamra-image
-    paths:
-      - iamra-signing-helper/**
+    # paths:
+    #   - iamra-signing-helper/**
   workflow_dispatch:
 
 jobs:
