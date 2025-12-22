@@ -24,6 +24,7 @@ jobs:
     needs: get-docker-tag
     uses: AllenNeuralDynamics/.github/.github/workflows/release-publish-docker-image.yml@main
     with:
+      default-branch: feat-iamra-image
       working-directory: iamra-signing-helper
       docker-tag: ${{ needs.get-docker-tag.outputs.docker_tag }}
       image-name: iamra-signing-helper
