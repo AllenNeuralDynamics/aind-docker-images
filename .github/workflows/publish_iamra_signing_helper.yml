@@ -19,12 +19,11 @@ jobs:
         run: |
           echo "sha_short=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
           echo "branch=$(echo ${GITHUB_REF_NAME})" >> "$GITHUB_ENV"
-          echo "docker_tag=$(echo ${GITHUB_REF_NAME})-$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
+          echo "docker_tag=$(echo ${GITHUB_REF_NAME})-$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_OUTPUT"
   publish:
     needs: get-docker-tag
     uses: AllenNeuralDynamics/.github/.github/workflows/release-publish-docker-image.yml@main
     with:
-      default-branch: feat-iamra-image
       working-directory: iamra-signing-helper
       docker-tag: ${{ needs.get-docker-tag.outputs.docker_tag }}
       image-name: iamra-signing-helper
