@@ -21,7 +21,7 @@ fi
 
 echo "Updating AWS credentials for default profile..."
 /aws_signing_helper update \
-  --certificate /iamra/client_chain.pem \
+  --certificate /iamra/client.pem \
   --private-key /iamra/client_private.key \
   --trust-anchor-arn $TRUST_ANCHOR_ARN \
   --profile-arn $PROFILE_ARN \

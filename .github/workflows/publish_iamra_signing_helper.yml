@@ -2,9 +2,9 @@ name: Publish iamra-signing-helper
 on:
   push:
     branches:
-      - feat-iamra-image
-    # paths:
-    #   - iamra-signing-helper/**
+      - main
+    paths:
+      - iamra-signing-helper/**
   workflow_dispatch:
 
 jobs:
