@@ -25,9 +25,14 @@ ENV VIRTUAL_ENV=/opt/venv
 # /opt/venv/bin wins over anything the base image puts on PATH.
 ENV PATH=${VIRTUAL_ENV}/bin:${PATH}
 
+# Minimal apt packages. No build-essential — cp313 wheels cover the
+# common scientific stack (numpy, scipy, pandas, torch, numba). If a
+# downstream capsule needs to compile a C extension, it can apt-install
+# build-essential in its own postInstall.
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-      build-essential bzip2 ca-certificates curl git gnupg2 locales unzip \
+      bzip2 ca-certificates curl git locales unzip \
+ && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
 # uv binary from the Astral distroless image.
@@ -36,6 +41,7 @@ COPY --from=uv /uv /uvx /usr/local/bin/
 # Install a managed Python 3.13 and create a dedicated venv at /opt/venv.
 RUN uv python install 3.13 \
  && uv venv --python 3.13 ${VIRTUAL_ENV} \
+ && rm -rf /root/.cache/uv \
  # Shadow any system python/pip so scripts that say `python3` or `pip`
  # resolve to the venv regardless of how they're invoked.
  && ln -sf ${VIRTUAL_ENV}/bin/python /usr/local/bin/python \
