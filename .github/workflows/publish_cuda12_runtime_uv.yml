@@ -1,14 +1,14 @@
-name: Publish cuda12-uv
+name: Publish cuda12-runtime-uv
 on:
   push:
     branches:
       - main
     paths:
-      - cuda12-uv/**
+      - cuda12-runtime-uv/**
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: cuda12-uv
+  IMAGE_NAME: cuda12-runtime-uv
 jobs:
   publish:
     runs-on: ubuntu-latest

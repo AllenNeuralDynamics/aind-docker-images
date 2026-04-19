@@ -2,11 +2,16 @@
 # No conda, no ML framework, no notebook server baked in — add what
 # you need in your capsule.
 #
+# Variant: `runtime` — ships the full CUDA userspace (libcudart,
+# libcublas, libcufft, libcurand, libcusparse, NCCL, cuDNN) so
+# non-torch CUDA workloads (cupy, jax, rapids, tensorflow) work out
+# of the box. Torch-only consumers could use a smaller `base` variant
+# (libcudart only) if one is published alongside.
+#
 # GPU availability is a deployment-time concern: the image includes
-# CUDA userspace libs (libcudart, libcublas, libcudnn, NCCL) but the
-# host driver is bind-mounted by nvidia-container-toolkit only when
-# the container is run with --gpus (on Code Ocean, controlled by the
-# capsule's machine type).
+# CUDA userspace libs but the host driver is bind-mounted by
+# nvidia-container-toolkit only when the container is run with --gpus
+# (on Code Ocean, controlled by the capsule's machine type).
 
 # Stage 1: uv binary, pulled from Astral's distroless image.
 FROM ghcr.io/astral-sh/uv:0.11.7 AS uv
@@ -15,7 +20,7 @@ FROM ghcr.io/astral-sh/uv:0.11.7 AS uv
 FROM docker.io/nvidia/cuda:12.8.1-runtime-ubuntu24.04
 
 LABEL org.opencontainers.image.source="https://github.com/AllenNeuralDynamics/aind-docker-images"
-LABEL org.opencontainers.image.description="CUDA 12.8 runtime + uv-managed Python 3.13. Minimal base for GPU-enabled AIND capsules."
+LABEL org.opencontainers.image.description="CUDA 12.8 runtime (cuBLAS/cuDNN/NCCL) + uv-managed Python 3.13. Minimal base for GPU-enabled AIND capsules."
 LABEL org.opencontainers.image.licenses="MIT"
 
 ENV DEBIAN_FRONTEND=noninteractive
