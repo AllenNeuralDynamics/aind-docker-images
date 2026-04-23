@@ -47,7 +47,9 @@ COPY --from=uv /uv /uvx /usr/local/bin/
 # Create a dedicated venv at /opt/venv using the base image's Python 3.13
 # (no `uv python install` — the official python:3.13-slim-bookworm image
 # already provides the exact interpreter we want).
-RUN uv venv --python python3.13 ${VIRTUAL_ENV} \
+# `--seed` installs pip into the venv so `/opt/venv/bin/pip` exists for the
+# symlinks below (and so Code Ocean's GUI recognises pip as available).
+RUN uv venv --seed --python python3.13 ${VIRTUAL_ENV} \
  && rm -rf /root/.cache/uv \
  # Shadow system python/pip so scripts that say `python3` or `pip`
  # resolve to the venv regardless of how they're invoked.

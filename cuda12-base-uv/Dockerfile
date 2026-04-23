@@ -48,8 +48,10 @@ RUN apt-get update \
 COPY --from=uv /uv /uvx /usr/local/bin/
 
 # Install a managed Python 3.13 and create a dedicated venv at /opt/venv.
+# `--seed` installs pip into the venv so `/opt/venv/bin/pip` exists for the
+# symlinks below (and so Code Ocean's GUI recognises pip as available).
 RUN uv python install 3.13 \
- && uv venv --python 3.13 ${VIRTUAL_ENV} \
+ && uv venv --seed --python 3.13 ${VIRTUAL_ENV} \
  && rm -rf /root/.cache/uv \
  # Shadow any system python/pip so scripts that say `python3` or `pip`
  # resolve to the venv regardless of how they're invoked.
