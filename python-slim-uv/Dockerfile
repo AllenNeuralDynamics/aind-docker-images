@@ -1,4 +1,4 @@
-# Minimal CPU-only base: python:3.13-slim-bookworm + uv.
+# Minimal CPU-only base: python:3.13-slim-trixie + uv.
 # No conda, no ML framework, no notebook server baked in — add what
 # you need in your capsule.
 #
@@ -17,11 +17,11 @@
 # Stage 1: uv binary, pulled from Astral's distroless image.
 FROM ghcr.io/astral-sh/uv:0.11.7 AS uv
 
-# Stage 2: Docker Official Python image, Debian bookworm slim.
-FROM docker.io/python:3.13-slim-bookworm
+# Stage 2: Docker Official Python image, Debian trixie slim.
+FROM docker.io/python:3.13-slim-trixie
 
 LABEL org.opencontainers.image.source="https://github.com/AllenNeuralDynamics/aind-docker-images"
-LABEL org.opencontainers.image.description="python:3.13-slim-bookworm + uv. Minimal CPU-only base for AIND capsules."
+LABEL org.opencontainers.image.description="python:3.13-slim-trixie + uv. Minimal CPU-only base for AIND capsules."
 LABEL org.opencontainers.image.licenses="MIT"
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -45,7 +45,7 @@ RUN apt-get update \
 COPY --from=uv /uv /uvx /usr/local/bin/
 
 # Create a dedicated venv at /opt/venv using the base image's Python 3.13
-# (no `uv python install` — the official python:3.13-slim-bookworm image
+# (no `uv python install` — the official python:3.13-slim-trixie image
 # already provides the exact interpreter we want).
 # `--seed` installs pip into the venv so `/opt/venv/bin/pip` exists for the
 # symlinks below (and so Code Ocean's GUI recognises pip as available).
