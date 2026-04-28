@@ -47,13 +47,20 @@ COPY --from=uv /uv /uvx /usr/local/bin/
 # Create a dedicated venv at /opt/venv using the base image's Python 3.13
 # (no `uv python install` — the official python:3.13-slim-trixie image
 # already provides the exact interpreter we want).
-# `--seed` installs pip into the venv so `/opt/venv/bin/pip` exists for the
-# symlinks below (and so Code Ocean's GUI recognises pip as available).
+# `--seed` installs pip into the venv so `/opt/venv/bin/pip` exists (and so
+# Code Ocean's GUI recognises pip as available).
 RUN uv venv --seed --python python3.13 ${VIRTUAL_ENV} \
  && rm -rf /root/.cache/uv \
- # Shadow system python/pip so scripts that say `python3` or `pip`
- # resolve to the venv regardless of how they're invoked.
- && ln -sf ${VIRTUAL_ENV}/bin/python /usr/local/bin/python \
- && ln -sf ${VIRTUAL_ENV}/bin/python /usr/local/bin/python3 \
+ # Shadow python/pip into the venv. python: wrapper, not symlink — a plain
+ # symlink leaves sys.executable=/usr/local/bin/python, so CPython's
+ # pyvenv.cfg lookup walks /usr/local and misses /opt/venv. The re-exec
+ # puts sys.executable inside /opt/venv so activation fires. pip/pip3: a
+ # symlink is fine because pip is itself a shebang script that re-execs.
+ # `rm -f` first: the slim-trixie base ships python/python3 as symlinks
+ # to python3.13; writing through them would clobber the real interpreter.
+ && rm -f /usr/local/bin/python /usr/local/bin/python3 \
+ && printf '#!/bin/sh\nexec /opt/venv/bin/python "$@"\n' > /usr/local/bin/python \
+ && chmod +x /usr/local/bin/python \
+ && ln -sf python /usr/local/bin/python3 \
  && ln -sf ${VIRTUAL_ENV}/bin/pip /usr/local/bin/pip \
  && ln -sf ${VIRTUAL_ENV}/bin/pip /usr/local/bin/pip3

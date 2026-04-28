@@ -48,14 +48,21 @@ RUN apt-get update \
 COPY --from=uv /uv /uvx /usr/local/bin/
 
 # Install a managed Python 3.13 and create a dedicated venv at /opt/venv.
-# `--seed` installs pip into the venv so `/opt/venv/bin/pip` exists for the
-# symlinks below (and so Code Ocean's GUI recognises pip as available).
+# `--seed` installs pip into the venv so `/opt/venv/bin/pip` exists (and so
+# Code Ocean's GUI recognises pip as available).
 RUN uv python install 3.13 \
  && uv venv --seed --python 3.13 ${VIRTUAL_ENV} \
  && rm -rf /root/.cache/uv \
- # Shadow any system python/pip so scripts that say `python3` or `pip`
- # resolve to the venv regardless of how they're invoked.
- && ln -sf ${VIRTUAL_ENV}/bin/python /usr/local/bin/python \
- && ln -sf ${VIRTUAL_ENV}/bin/python /usr/local/bin/python3 \
+ # Shadow python/pip into the venv. python: wrapper, not symlink — a plain
+ # symlink leaves sys.executable=/usr/local/bin/python, so CPython's
+ # pyvenv.cfg lookup walks /usr/local and misses /opt/venv. The re-exec
+ # puts sys.executable inside /opt/venv so activation fires. pip/pip3: a
+ # symlink is fine because pip is itself a shebang script that re-execs.
+ # `rm -f` is a no-op on this image but guards against future base images
+ # that (like python:3.13-slim) ship python/python3 as symlinks to python3.13.
+ && rm -f /usr/local/bin/python /usr/local/bin/python3 \
+ && printf '#!/bin/sh\nexec /opt/venv/bin/python "$@"\n' > /usr/local/bin/python \
+ && chmod +x /usr/local/bin/python \
+ && ln -sf python /usr/local/bin/python3 \
  && ln -sf ${VIRTUAL_ENV}/bin/pip /usr/local/bin/pip \
  && ln -sf ${VIRTUAL_ENV}/bin/pip /usr/local/bin/pip3
