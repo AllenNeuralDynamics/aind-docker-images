@@ -8,3 +8,33 @@ updates:
       actions:
         patterns:
           - "*"
+
+  - package-ecosystem: "docker"
+    directories:
+      - "/aind-airflow"
+      - "/cuda11-miniconda-jupyterlab"
+      - "/cuda12-base-uv"
+      - "/cuda12-miniconda-jupyterlab"
+      - "/cuda12-runtime-uv"
+      - "/hortacloud-deployment"
+      - "/lightning-jupyterlab"
+      - "/lightning-jupyterlab-py39"
+      - "/python-slim-uv"
+      - "/pytorch-py310"
+      - "/pytorch-tensorflow-jax"
+      - "/r2u-rstudio"
+      - "/ubuntu-ffmpeg"
+    schedule:
+      interval: "weekly"
+    groups:
+      docker:
+        patterns:
+          - "*"
+    ignore:
+      # Stay on CUDA 12 until PyTorch ships wheels for CUDA 13. Stable
+      # torch 2.7.0 only builds against 11.8 / 12.6 / 12.8, and the
+      # cuda12-*-uv image names encode the major version — a CUDA 13
+      # move needs a rename, not a pin bump. Patch bumps (12.x.y) still
+      # open PRs.
+      - dependency-name: "nvidia/cuda"
+        update-types: ["version-update:semver-major"]
