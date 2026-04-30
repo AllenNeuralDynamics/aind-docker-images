@@ -1,4 +1,4 @@
-FROM nvidia/cuda:13.2.1-runtime-ubuntu24.04
+FROM nvidia/cuda:13.2.1-devel-ubuntu24.04
 LABEL maintainer "David Feng <david.feng@alleninstitute.org>"
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -16,8 +16,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       unzip \
     && rm -rf /var/lib/apt/lists/*
     
-ARG MINICONDA_INSTALLER=Miniconda3-py39_23.5.2-0-Linux-x86_64.sh
-ARG MINICONDA_SHA256=9829d95f639bd0053b2ed06d1204e60644617bf37dd5cc57523732e0e8d64516
+ARG MINICONDA_INSTALLER=Miniconda3-py310_23.1.0-1-Linux-x86_64.sh
+ARG MINICONDA_SHA256=32d73e1bc33fda089d7cd9ef4c1be542616bd8e437d1f77afeeaf7afdb019787
 ARG CONDA_DIR=/opt/conda
 
 RUN curl -O https://repo.anaconda.com/miniconda/${MINICONDA_INSTALLER} \
@@ -38,10 +38,3 @@ RUN conda config --system --set auto_update_conda false \
 
 RUN pip install -U --no-cache-dir jupyterlab jupyter notebook
 
-RUN pip install -U --no-cache-dir --extra-index-url https://developer.download.nvidia.com/compute/redist --upgrade nvidia-dali-cuda110
-
-RUN pip install -U --no-cache-dir torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 
-
-RUN pip install -U --no-cache-dir lightning tensorboard lightning-bolts 
-
-ENV NVIDIA_DRIVER_CAPABILITIES compute,video,utility
