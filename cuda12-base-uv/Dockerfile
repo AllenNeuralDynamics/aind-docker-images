@@ -18,10 +18,10 @@
 # type).
 
 # Stage 1: uv binary, pulled from Astral's distroless image.
-FROM ghcr.io/astral-sh/uv:0.11.7 AS uv
+FROM ghcr.io/astral-sh/uv:0.11.11 AS uv
 
 # Stage 2: `base` on CUDA 12.8 / Ubuntu 24.04
-FROM docker.io/nvidia/cuda:12.8.1-base-ubuntu24.04
+FROM docker.io/nvidia/cuda:12.9.1-base-ubuntu24.04
 
 LABEL org.opencontainers.image.source="https://github.com/AllenNeuralDynamics/aind-docker-images"
 LABEL org.opencontainers.image.description="CUDA 12.8 base (driver stub only) + uv-managed Python 3.13. Minimal GPU base for AIND capsules that install pytorch/jax/cupy via pip."
