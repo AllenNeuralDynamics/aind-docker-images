@@ -14,10 +14,10 @@
 # (on Code Ocean, controlled by the capsule's machine type).
 
 # Stage 1: uv binary, pulled from Astral's distroless image.
-FROM ghcr.io/astral-sh/uv:0.11.7 AS uv
+FROM ghcr.io/astral-sh/uv:0.11.11 AS uv
 
 # Stage 2: runtime on CUDA 12.8 / Ubuntu 24.04
-FROM docker.io/nvidia/cuda:12.8.1-runtime-ubuntu24.04
+FROM docker.io/nvidia/cuda:12.9.1-runtime-ubuntu24.04
 
 LABEL org.opencontainers.image.source="https://github.com/AllenNeuralDynamics/aind-docker-images"
 LABEL org.opencontainers.image.description="CUDA 12.8 runtime (cuBLAS/cuDNN/NCCL) + uv-managed Python 3.13. Minimal base for GPU-enabled AIND capsules."

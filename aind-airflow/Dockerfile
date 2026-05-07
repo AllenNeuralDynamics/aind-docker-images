@@ -1,5 +1,5 @@
 # v0.4.2
-FROM apache/airflow:2.8.1-python3.9
+FROM apache/airflow:3.0.6-python3.9
 
 # install your pip packages
 RUN pip install --no-cache-dir \
