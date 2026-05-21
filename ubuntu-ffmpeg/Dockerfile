@@ -1,11 +1,11 @@
 # Stage 1: get ffmpeg binaries
-FROM docker.io/mwader/static-ffmpeg:8.1 AS ffmpeg
+FROM docker.io/mwader/static-ffmpeg:8.1.1 AS ffmpeg
 
 # Stage 2: get miniforge
 FROM docker.io/condaforge/miniforge3:26.1.1-3 AS miniforge
 
 # Stage 3: runtime
-FROM docker.io/ubuntu:24.04
+FROM docker.io/ubuntu:26.04
 
 ENV CONDA_DIR=/opt/conda
 ENV PATH=${CONDA_DIR}/bin:${PATH}
