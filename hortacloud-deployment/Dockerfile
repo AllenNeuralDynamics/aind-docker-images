@@ -1,5 +1,5 @@
 # v0.0.1
-from node:16
+from node:26
 
 RUN apt-get update && \
     apt-get install -y less
