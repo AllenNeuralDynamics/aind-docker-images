@@ -31,6 +31,17 @@ ENV VIRTUAL_ENV=/opt/venv
 # /opt/venv/bin wins over anything the base image puts on PATH.
 ENV PATH=${VIRTUAL_ENV}/bin:${PATH}
 
+# uv ergonomics — affect a capsule's `uv pip install` in postInstall (CO's UI
+# installs use plain pip, untouched by these) and this image's own build:
+#   - copy link mode: silences "failed to hardlink, falling back to copy".
+#   - bytecode precompile: faster first import on cold starts.
+#   - no Python downloads: reuse the image's python3.13 / this venv, never let
+#     uv fetch a second managed interpreter. Safe here — the official slim image
+#     already provides python3.13 (this image never runs `uv python install`).
+ENV UV_LINK_MODE=copy
+ENV UV_COMPILE_BYTECODE=1
+ENV UV_PYTHON_DOWNLOADS=never
+
 # Minimal apt packages. No build-essential — cp313 wheels cover the
 # common scientific stack (numpy, scipy, pandas, numba). If a
 # downstream capsule needs to compile a C extension, it can apt-install

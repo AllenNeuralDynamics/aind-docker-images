@@ -3,10 +3,23 @@
 # you need in your capsule.
 #
 # Variant: `runtime` — ships the full CUDA userspace (libcudart,
-# libcublas, libcufft, libcurand, libcusparse, NCCL, cuDNN) so
-# non-torch CUDA workloads (cupy, jax, rapids, tensorflow) work out
-# of the box. Torch-only consumers could use a smaller `base` variant
-# (libcudart only) if one is published alongside.
+# libcublas, libcufft, libcurand, libcusparse, NCCL, cuDNN) for CUDA
+# workloads that use the *system* libs (cupy, rapids, or a plain
+# `tensorflow` without [and-cuda]). For the smaller driver-stub variant —
+# right for torch and other wheels that bundle their own CUDA — use
+# cuda12-base-uv.
+#
+# Caveat: capsules that install tensorflow[and-cuda] / jax pull their OWN
+# nvidia-*-cu12 CUDA wheels even on this image, and those wheels (unlike
+# torch) aren't RPATH'd — so this image also puts the wheel lib dirs on
+# LD_LIBRARY_PATH (see the ENV near the end). Without it those capsules
+# dlopen-fail and silently fall back to CPU despite the system libs.
+#
+# CUDA version: keep conservative (12.8) — the bundled framework wheels carry
+# their own CUDA (tensorflow[and-cuda] 2.21 -> CUDA 12.9 / cuDNN 9; torch ->
+# cu126..cu130), and the base CUDA mainly sets the NVIDIA_REQUIRE_CUDA
+# host-driver floor; bumping to 13.x just raises that floor and drops Volta, so
+# it would break V100 hosts (T4/Turing and newer are unaffected).
 #
 # GPU availability is a deployment-time concern: the image includes
 # CUDA userspace libs but the host driver is bind-mounted by
@@ -29,6 +42,15 @@ ENV MPLBACKEND=Agg
 ENV VIRTUAL_ENV=/opt/venv
 # /opt/venv/bin wins over anything the base image puts on PATH.
 ENV PATH=${VIRTUAL_ENV}/bin:${PATH}
+
+# uv ergonomics — these affect a capsule's `uv pip install` in postInstall (CO's
+# UI installs use plain pip, which these don't touch) and this image's own build:
+#   - copy link mode: silences "failed to hardlink, falling back to copy" when the
+#     uv cache and venv live on different layers/mounts.
+#   - bytecode precompile: write .pyc at install time -> faster first import on
+#     reproducible-run / pipeline cold starts.
+ENV UV_LINK_MODE=copy
+ENV UV_COMPILE_BYTECODE=1
 
 # Minimal apt packages. No build-essential — cp313 wheels cover the
 # common scientific stack (numpy, scipy, pandas, torch, numba). If a
@@ -62,3 +84,21 @@ RUN uv python install 3.13 \
  && ln -sf python /usr/local/bin/python3 \
  && ln -sf ${VIRTUAL_ENV}/bin/pip /usr/local/bin/pip \
  && ln -sf ${VIRTUAL_ENV}/bin/pip /usr/local/bin/pip3
+
+# Now that the managed interpreter + venv exist, forbid uv from downloading
+# ANOTHER Python in a capsule's postInstall / interactive use — always reuse
+# /opt/venv. Set AFTER the `uv python install` above, which legitimately needs
+# to download the interpreter.
+ENV UV_PYTHON_DOWNLOADS=never
+
+# Make pip-wheel CUDA libs discoverable for tensorflow[and-cuda]/jax capsules.
+# Even on this runtime variant (which ships system CUDA), those frameworks pull
+# their own nvidia-*-cu12 wheels under nvidia/*/lib and, unlike torch, don't
+# RPATH them — so without this they dlopen-fail and fall back to CPU. Putting the
+# wheel lib dirs on LD_LIBRARY_PATH fixes every execution context (run, pipeline,
+# interactive shell). Dirs are skipped by the loader until a capsule installs the
+# wheels; plain (system-lib) capsules that install no nvidia wheels are unaffected
+# and keep using the system CUDA via the preserved trailing ${LD_LIBRARY_PATH}.
+# NOTE: hardcodes the cp313 site-packages path; update python3.13 if it changes.
+ARG NVLIB=/opt/venv/lib/python3.13/site-packages/nvidia
+ENV LD_LIBRARY_PATH=${NVLIB}/cublas/lib:${NVLIB}/cuda_cupti/lib:${NVLIB}/cuda_nvrtc/lib:${NVLIB}/cuda_runtime/lib:${NVLIB}/cudnn/lib:${NVLIB}/cufft/lib:${NVLIB}/curand/lib:${NVLIB}/cusolver/lib:${NVLIB}/cusparse/lib:${NVLIB}/cusparselt/lib:${NVLIB}/nccl/lib:${NVLIB}/nvjitlink/lib:${NVLIB}/nvtx/lib:${LD_LIBRARY_PATH}
