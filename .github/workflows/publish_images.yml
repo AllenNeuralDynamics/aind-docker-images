@@ -1,0 +1,108 @@
+name: Publish Docker images
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      image_name:
+        description: Top-level Docker image directory to publish
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  detect-images:
+    runs-on: ubuntu-latest
+    outputs:
+      has_images: ${{ steps.images.outputs.has_images }}
+      matrix: ${{ steps.images.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - id: images
+        env:
+          PREVIOUS_SHA: ${{ github.event.before }}
+          IMAGE_NAME: ${{ inputs.image_name }}
+        run: |
+          excluded_images=(aind-airflow hortacloud-deployment)
+
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            candidates=("$IMAGE_NAME")
+          elif [[ "$PREVIOUS_SHA" =~ ^0+$ ]]; then
+            mapfile -t candidates < <(
+              git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA" |
+                awk -F/ 'NF { print $1 }' | sort -u
+            )
+          else
+            mapfile -t candidates < <(
+              git diff --name-only "$PREVIOUS_SHA" "$GITHUB_SHA" |
+                awk -F/ 'NF { print $1 }' | sort -u
+            )
+          fi
+
+          selected_images=()
+          for image_name in "${candidates[@]}"; do
+            is_excluded=false
+            for excluded_image in "${excluded_images[@]}"; do
+              if [[ "$image_name" == "$excluded_image" ]]; then
+                is_excluded=true
+                break
+              fi
+            done
+
+            is_image_directory=false
+            if [[ "$image_name" != */* && -f "$image_name/Dockerfile" ]]; then
+              is_image_directory=true
+            fi
+
+            if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" && ( "$is_excluded" == true || "$is_image_directory" != true ) ]]; then
+              echo "::error::'$image_name' must be a standard top-level image directory containing a Dockerfile."
+              exit 1
+            fi
+
+            if [[ "$is_image_directory" == true && "$is_excluded" != true ]]; then
+              selected_images+=("$image_name")
+            fi
+          done
+
+          matrix=$(printf '%s\n' "${selected_images[@]}" | jq -Rsc \
+            'split("\n") | map(select(length > 0) | {image_name: .}) | {include: .}')
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          if [[ ${#selected_images[@]} -gt 0 ]]; then
+            echo "has_images=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_images=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  publish:
+    needs: detect-images
+    if: needs.detect-images.outputs.has_images == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.detect-images.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Compute Docker image tag
+        run: echo "docker_tag=${GITHUB_REF_NAME}-$(git rev-parse --short \"$GITHUB_SHA\")" >> "$GITHUB_ENV"
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build image and push to GitHub Container Registry
+        uses: docker/build-push-action@v7
+        with:
+          context: ./${{ matrix.image_name }}
+          push: true
+          tags: |
+            ghcr.io/allenneuraldynamics/${{ matrix.image_name }}:${{ env.docker_tag }}
+            ghcr.io/allenneuraldynamics/${{ matrix.image_name }}:latest
