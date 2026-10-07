@@ -4,14 +4,14 @@
 /aind-airflow/ @AllenNeuralDynamics/data-infrastructure
 /hortacloud-deployment/ @AllenNeuralDynamics/data-infrastructure
 
-/cuda13-base-uv/ @galenlynch
-/python-slim-uv/ @galenlynch
-/ubuntu-ffmpeg/ @galenlynch
+/cuda13-base-uv/ @galenlynch @AllenNeuralDynamics/data-infrastructure
+/python-slim-uv/ @galenlynch @AllenNeuralDynamics/data-infrastructure
+/ubuntu-ffmpeg/ @galenlynch @AllenNeuralDynamics/data-infrastructure
 
-/pytorch-py310/ @tmchartrand
-/r2u-rstudio/ @tmchartrand
+/pytorch-py310/ @tmchartrand @AllenNeuralDynamics/data-infrastructure
+/r2u-rstudio/ @tmchartrand @AllenNeuralDynamics/data-infrastructure
 
-/cuda13-miniforge-jupyterlab/ @galenlynch @tmchartrand
-/jax-jupyterlab/ @galenlynch @tmchartrand
-/lightning-jupyterlab/ @galenlynch @tmchartrand
-/tensorflow-jupyterlab/ @galenlynch @tmchartrand
+/cuda13-miniforge-jupyterlab/ @galenlynch @tmchartrand @AllenNeuralDynamics/data-infrastructure
+/jax-jupyterlab/ @galenlynch @tmchartrand @AllenNeuralDynamics/data-infrastructure
+/lightning-jupyterlab/ @galenlynch @tmchartrand @AllenNeuralDynamics/data-infrastructure
+/tensorflow-jupyterlab/ @galenlynch @tmchartrand @AllenNeuralDynamics/data-infrastructure
