@@ -79,7 +79,7 @@ updates:
         patterns:
           - "*"
     ignore:
-      # Airflow 3 is a migration, not a bump.
+      # Airflow 3 is a migration, not a bump; tracked in #73.
       - dependency-name: "apache/airflow"
         update-types: ["version-update:semver-major"]
       # Odd Node majors never become LTS; move to the next even major by hand.
