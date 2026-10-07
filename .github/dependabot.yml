@@ -37,6 +37,7 @@ updates:
     directories:
       - "/cuda11-miniconda-jupyterlab"
       - "/cuda12-miniconda-jupyterlab"
+      - "/cuda13-miniforge-jupyterlab"
       - "/lightning-jupyterlab"
       - "/lightning-jupyterlab-py39"
       - "/pytorch-tensorflow-jax"
