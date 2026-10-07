@@ -36,6 +36,7 @@ updates:
   - package-ecosystem: "docker"
     directories:
       - "/cuda13-miniforge-jupyterlab"
+      - "/jax-jupyterlab"
       - "/lightning-jupyterlab"
       - "/pytorch-tensorflow-jax"
     schedule:
@@ -53,6 +54,7 @@ updates:
 
   - package-ecosystem: "pip"
     directories:
+      - "/jax-jupyterlab"
       - "/lightning-jupyterlab"
     schedule:
       interval: "weekly"
