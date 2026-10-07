@@ -12,7 +12,7 @@
 #   libgl1, libglib2.0-0, ffmpeg, etc.). PPAs are the main thing that
 #   won't work, but pipeline capsules don't use PPAs.
 #
-# For GPU-capable roles use cuda12-runtime-uv or cuda12-base-uv.
+# For GPU-capable roles use cuda13-base-uv.
 
 # Stage 1: uv binary, pulled from Astral's distroless image.
 FROM ghcr.io/astral-sh/uv:0.11.7 AS uv

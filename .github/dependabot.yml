@@ -16,8 +16,7 @@ updates:
 
   - package-ecosystem: "docker"
     directories:
-      - "/cuda12-base-uv"
-      - "/cuda12-runtime-uv"
+      - "/cuda13-base-uv"
       - "/python-slim-uv"
       - "/ubuntu-ffmpeg"
     schedule:
