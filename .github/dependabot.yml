@@ -35,11 +35,8 @@ updates:
 
   - package-ecosystem: "docker"
     directories:
-      - "/cuda11-miniconda-jupyterlab"
-      - "/cuda12-miniconda-jupyterlab"
       - "/cuda13-miniforge-jupyterlab"
       - "/lightning-jupyterlab"
-      - "/lightning-jupyterlab-py39"
       - "/pytorch-tensorflow-jax"
     schedule:
       interval: "weekly"
@@ -53,6 +50,18 @@ updates:
       # Image names encode the CUDA major, so a new major is a new image.
       - dependency-name: "nvidia/cuda"
         update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "pip"
+    directories:
+      - "/lightning-jupyterlab"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    groups:
+      pip-jupyterlab:
+        patterns:
+          - "*"
 
   - package-ecosystem: "docker"
     directories:
