@@ -1,0 +1,19 @@
+# Last matching pattern wins; any one listed owner can approve. Paths outside
+# an image directory deliberately have no owner.
+
+/aind-airflow/ @jtyoung84 @yosefmaru
+/hortacloud-deployment/ @yosefmaru @jtyoung84
+
+/cuda12-base-uv/ @galenlynch
+/cuda12-runtime-uv/ @galenlynch
+/python-slim-uv/ @galenlynch
+/ubuntu-ffmpeg/ @galenlynch
+
+/pytorch-py310/ @tmchartrand
+/r2u-rstudio/ @tmchartrand
+
+/cuda11-miniconda-jupyterlab/ @galenlynch @tmchartrand
+/cuda12-miniconda-jupyterlab/ @galenlynch @tmchartrand
+/lightning-jupyterlab/ @galenlynch @tmchartrand
+/lightning-jupyterlab-py39/ @galenlynch @tmchartrand
+/pytorch-tensorflow-jax/ @galenlynch @tmchartrand
