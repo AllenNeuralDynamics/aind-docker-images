@@ -1,16 +1,16 @@
-# Minimal base: NVIDIA CUDA 12 `base` variant + uv-managed Python 3.13.
+# Minimal base: NVIDIA CUDA 13 `base` variant + uv-managed Python 3.13.
 # No conda, no ML framework, no notebook server baked in — add what
 # you need in your capsule.
 #
-# Variant: `base` — ships only the CUDA driver stub (libcuda.so) and
-# env vars; no libcudart/libcublas/libcufft/libcurand/libcusparse/NCCL/
-# cuDNN. ~2.3 GB smaller than the `runtime` variant.
+# Variant: `base` — ships libcudart and the CUDA env vars, but no
+# cuBLAS, cuFFT, cuRAND, cuSPARSE, NCCL or cuDNN; about 2 GB smaller
+# than `runtime`. pytorch, jax, cupy and tensorflow wheels bundle their
+# own CUDA libraries, and a capsule that needs another one can install
+# its nvidia-*-cu13 pip package.
 #
-# Use this when the downstream capsule installs pytorch (or tensorflow,
-# jax, cupy) via pip/uv — those wheels bundle their own CUDA runtime
-# libraries and don't link against the system copies. If you need
-# system cuBLAS/cuDNN/NCCL (rare in modern Python ML stacks), use
-# cuda12-runtime-uv instead.
+# CUDA 13 needs compute capability >=7.5 (T4 and newer);
+# NVIDIA_REQUIRE_CUDA in the base image lists the host drivers that pass
+# the check at container start.
 #
 # GPU availability is a deployment-time concern: the host driver is
 # bind-mounted by nvidia-container-toolkit only when the container is
@@ -18,21 +18,21 @@
 # type).
 
 # Stage 1: uv binary, pulled from Astral's distroless image.
-FROM ghcr.io/astral-sh/uv:0.11.7 AS uv
+FROM ghcr.io/astral-sh/uv:0.12.23 AS uv
 
-# Stage 2: `base` on CUDA 12.8 / Ubuntu 24.04
-FROM docker.io/nvidia/cuda:12.8.1-base-ubuntu24.04
+# Stage 2: `base` on CUDA 13.4 / Ubuntu 26.04
+FROM docker.io/nvidia/cuda:13.4.2-base-ubuntu26.04
 
 LABEL org.opencontainers.image.source="https://github.com/AllenNeuralDynamics/aind-docker-images"
-LABEL org.opencontainers.image.description="CUDA 12.8 base (driver stub only) + uv-managed Python 3.13. Minimal GPU base for AIND capsules that install pytorch/jax/cupy via pip."
+LABEL org.opencontainers.image.description="CUDA 13.4 base + uv-managed Python 3.13. Minimal GPU base for AIND capsules that install pytorch/jax/cupy via pip."
 LABEL org.opencontainers.image.licenses="MIT"
 
 ENV DEBIAN_FRONTEND=noninteractive
-# Matplotlib default: headless-safe for reproducible runs.
-ENV MPLBACKEND=Agg
 ENV VIRTUAL_ENV=/opt/venv
 # /opt/venv/bin wins over anything the base image puts on PATH.
 ENV PATH=${VIRTUAL_ENV}/bin:${PATH}
+# The base image mounts only compute and utility; video adds NVDEC/NVENC.
+ENV NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
 
 # Minimal apt packages. No build-essential — cp313 wheels cover the
 # common scientific stack (numpy, scipy, pandas, torch, numba). If a
