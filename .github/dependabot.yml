@@ -39,6 +39,7 @@ updates:
       - "/jax-jupyterlab"
       - "/lightning-jupyterlab"
       - "/pytorch-tensorflow-jax"
+      - "/tensorflow-jupyterlab"
     schedule:
       interval: "weekly"
     cooldown:
@@ -56,6 +57,7 @@ updates:
     directories:
       - "/jax-jupyterlab"
       - "/lightning-jupyterlab"
+      - "/tensorflow-jupyterlab"
     schedule:
       interval: "weekly"
     cooldown:
