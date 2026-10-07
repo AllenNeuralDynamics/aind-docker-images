@@ -47,21 +47,21 @@ In every image:
 
 ## CUDA
 
-Build GPU images on a `base` image (`nvidia/cuda:*-base-*`). pytorch, jax and
-cupy wheels and conda-forge's CUDA packages bring their own CUDA libraries, so
-the image's CUDA version only sets the driver check at container start. A
-capsule that needs another CUDA library can install its `nvidia-*-cu13` pip
-package.
+Build GPU images on the NVIDIA `base` variant (`nvidia/cuda:*-base-*`). pytorch,
+jax and cupy wheels and conda-forge's CUDA packages bring their own CUDA
+libraries, so the image's CUDA version only sets the driver check at container
+start. A capsule that needs another CUDA library can install its `nvidia-*-cu13`
+pip package.
 
-Target CUDA 13 on Ubuntu 26.04 for GPU images. CUDA 13 needs compute
-capability 7.5 or newer (T4 and later), which Code Ocean's default GPU machines
-meet; `NVIDIA_REQUIRE_CUDA` in the base image lists the host drivers that pass
+Target CUDA 13 on Ubuntu 26.04 for GPU images. CUDA 13 needs compute capability
+7.5 or newer (T4 and later), which Code Ocean's default GPU machines meet;
+`NVIDIA_REQUIRE_CUDA` in the NVIDIA base image lists the host drivers that pass
 that check. Check a machine with
 `nvidia-smi --query-gpu=name,driver_version,compute_cap --format=csv`.
 
-Set `ENV NVIDIA_DRIVER_CAPABILITIES=compute,video,utility`. The base images
-mount only `compute` and `utility`, so without `video` GPU video decoding and
-encoding fail for lack of the driver's NVDEC and NVENC libraries.
+Set `ENV NVIDIA_DRIVER_CAPABILITIES=compute,video,utility`. The NVIDIA base
+images mount only `compute` and `utility`, so without `video` GPU video decoding
+and encoding fail for lack of the driver's NVDEC and NVENC libraries.
 
 Give a new CUDA major a new directory, since image names encode it; Dependabot
 skips `nvidia/cuda` majors for that reason.
