@@ -25,8 +25,6 @@ LABEL org.opencontainers.image.description="python:3.13-slim-trixie + uv. Minima
 LABEL org.opencontainers.image.licenses="MIT"
 
 ENV DEBIAN_FRONTEND=noninteractive
-# Matplotlib default: headless-safe for reproducible runs.
-ENV MPLBACKEND=Agg
 ENV VIRTUAL_ENV=/opt/venv
 # /opt/venv/bin wins over anything the base image puts on PATH.
 ENV PATH=${VIRTUAL_ENV}/bin:${PATH}
