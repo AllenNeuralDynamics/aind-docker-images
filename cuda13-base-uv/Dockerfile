@@ -31,6 +31,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV VIRTUAL_ENV=/opt/venv
 # /opt/venv/bin wins over anything the base image puts on PATH.
 ENV PATH=${VIRTUAL_ENV}/bin:${PATH}
+# Hardlinking fails wherever the uv cache is mounted apart from the venv;
+# copy without uv's warning on every install.
+ENV UV_LINK_MODE=copy
 # The base image mounts only compute and utility; video adds NVDEC/NVENC.
 ENV NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
 
