@@ -18,7 +18,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v7
       with:
-        ref: ${{ inputs.default_branch }}
         fetch-depth: 0
         token: ${{ secrets.SERVICE_TOKEN }}
     - name: Check changes and bump version in file
