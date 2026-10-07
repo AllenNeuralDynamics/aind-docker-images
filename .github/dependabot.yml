@@ -38,7 +38,6 @@ updates:
       - "/cuda13-miniforge-jupyterlab"
       - "/jax-jupyterlab"
       - "/lightning-jupyterlab"
-      - "/pytorch-tensorflow-jax"
       - "/tensorflow-jupyterlab"
     schedule:
       interval: "weekly"
