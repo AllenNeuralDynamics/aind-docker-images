@@ -25,7 +25,6 @@ holds the fields of Code Ocean's registration form:
 ```yaml
 starter_environment: true   # false keeps the file but skips registration
 title: JAX JupyterLab
-version: JAX 0.11.2, CUDA 13.4, Python 3.13, Ubuntu 26.04
 description: >-
   One or two sentences on what the image holds and who it is for.
 tags: [Python, JAX, JupyterLab, CUDA 13, GPU, ubuntu 26.04]
@@ -33,8 +32,8 @@ language: Python            # Python, R, MATLAB or C/C++
 gpu: true                   # Code Ocean machine type
 ```
 
-`version` repeats versions pinned in the `Dockerfile` and `requirements.txt`,
-so update it in the same change that bumps them.
+The form's version line is left out, since it changes with every dependency
+update; take it from the built image when registering.
 
 ## Recipes
 

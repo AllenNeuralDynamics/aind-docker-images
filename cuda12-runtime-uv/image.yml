@@ -1,6 +1,5 @@
 starter_environment: true
 title: CUDA12 runtime + uv
-version: CUDA 12.8, Python 3.13, Ubuntu 24.04
 description: >-
   NVIDIA CUDA 12.8 runtime (cuBLAS, cuFFT, cuRAND, cuSPARSE, NCCL; no cuDNN)
   with a uv-managed Python 3.13 venv at /opt/venv, for GPU capsules that link
