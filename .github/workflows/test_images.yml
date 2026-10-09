@@ -60,3 +60,21 @@ jobs:
             exit 0
           fi
           docker run --rm -i "$IMAGE_NAME:test" bash -s < "$IMAGE_NAME/test.sh"
+
+  # The check to require on main: it reports on every PR, including those that
+  # change no image and so skip the test matrix.
+  result:
+    name: Test result
+    needs: [detect-images, test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          for result in $RESULTS; do
+            if [[ "$result" != success && "$result" != skipped ]]; then
+              echo "::error::A job ended with '$result'."
+              exit 1
+            fi
+          done
