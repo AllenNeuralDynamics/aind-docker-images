@@ -1,0 +1,8 @@
+starter_environment: true
+title: Lightning JupyterLab
+description: >-
+  PyTorch Lightning, PyTorch and TensorBoard with JupyterLab, on Miniforge
+  (conda-forge) and Python 3.13 at /opt/conda. Needs a T4 or newer GPU.
+tags: [Python, PyTorch, Lightning, JupyterLab, CUDA 13, GPU, ubuntu 26.04]
+language: Python
+gpu: true

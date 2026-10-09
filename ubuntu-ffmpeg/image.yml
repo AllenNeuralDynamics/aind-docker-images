@@ -1,0 +1,8 @@
+starter_environment: true
+title: Ubuntu-ffmpeg
+description: >-
+  Ubuntu 24.04 with static ffmpeg and ffprobe builds, and Miniforge
+  (conda-forge) with Python 3.13 at /opt/conda.
+tags: [ubuntu 24.04, miniforge, ffmpeg, ffprobe]
+language: Python
+gpu: false

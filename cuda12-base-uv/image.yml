@@ -1,0 +1,10 @@
+starter_environment: true
+title: CUDA12 base + uv
+description: >-
+  Minimal GPU base: NVIDIA CUDA 12.8 base variant (driver stub only, no
+  cuBLAS/cuDNN/NCCL) with a uv-managed Python 3.13 venv at /opt/venv. For
+  capsules that pip-install torch, jax or cupy, whose wheels bring their own
+  CUDA libraries.
+tags: [uv, CUDA 12, GPU, ubuntu 24.04]
+language: Python
+gpu: true
