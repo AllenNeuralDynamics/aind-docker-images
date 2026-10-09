@@ -1,0 +1,10 @@
+starter_environment: true
+title: PyTorch (Python 3.10)
+version: PyTorch 2.14.1, CUDA 13.4, Python 3.10, Ubuntu 26.04
+description: >-
+  PyTorch, torchvision and torchaudio with JupyterLab, on Miniforge
+  (conda-forge) and Python 3.10 at /opt/conda, for capsules whose
+  dependencies need Python 3.10. Needs a T4 or newer GPU.
+tags: [Python, PyTorch, JupyterLab, CUDA 13, GPU, python3.10, ubuntu 26.04]
+language: Python
+gpu: true
