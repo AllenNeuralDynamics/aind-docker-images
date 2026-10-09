@@ -29,8 +29,12 @@ In every image:
 
 - Copy tools in with `COPY --from=<pinned image>` rather than downloading
   installers: uv from `ghcr.io/astral-sh/uv`, Miniforge from
-  `condaforge/miniforge3`, ffmpeg from `mwader/static-ffmpeg`. Never use
+  `quay.io/condaforge/miniforge3`, ffmpeg from `mwader/static-ffmpeg`. Never use
   Miniconda, whose default channel is under Anaconda's commercial terms.
+- Avoid Docker Hub where an image has another registry: `nvcr.io/nvidia/cuda`,
+  `quay.io/condaforge/miniforge3`, and `public.ecr.aws/docker/library/` for
+  Docker's official images. Docker Hub rate-limits anonymous pulls, and CI and
+  Dependabot pull anonymously.
 - Pin every `FROM` to a version tag and its digest (`image:tag@sha256:...`).
   Upstreams rebuild tags in place, so only the digest fixes what a rebuild
   gets; Dependabot bumps both.
