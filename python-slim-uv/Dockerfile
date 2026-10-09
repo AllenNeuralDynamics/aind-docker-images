@@ -12,24 +12,25 @@
 #   libgl1, libglib2.0-0, ffmpeg, etc.). PPAs are the main thing that
 #   won't work, but pipeline capsules don't use PPAs.
 #
-# For GPU-capable roles use cuda12-runtime-uv or cuda12-base-uv.
+# For GPU-capable roles use cuda13-base-uv.
 
 # Stage 1: uv binary, pulled from Astral's distroless image.
-FROM ghcr.io/astral-sh/uv:0.11.7 AS uv
+FROM ghcr.io/astral-sh/uv:0.12.23@sha256:61d393e44e249f2e4b526b6c7ddcecce245946826e608e11c93ad4f5bba55b21 AS uv
 
 # Stage 2: Docker Official Python image, Debian trixie slim.
-FROM docker.io/python:3.13-slim-trixie
+FROM public.ecr.aws/docker/library/python:3.13-slim-trixie@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f
 
 LABEL org.opencontainers.image.source="https://github.com/AllenNeuralDynamics/aind-docker-images"
 LABEL org.opencontainers.image.description="python:3.13-slim-trixie + uv. Minimal CPU-only base for AIND capsules."
 LABEL org.opencontainers.image.licenses="MIT"
 
 ENV DEBIAN_FRONTEND=noninteractive
-# Matplotlib default: headless-safe for reproducible runs.
-ENV MPLBACKEND=Agg
 ENV VIRTUAL_ENV=/opt/venv
 # /opt/venv/bin wins over anything the base image puts on PATH.
 ENV PATH=${VIRTUAL_ENV}/bin:${PATH}
+# Hardlinking fails wherever the uv cache is mounted apart from the venv;
+# copy without uv's warning on every install.
+ENV UV_LINK_MODE=copy
 
 # Minimal apt packages. No build-essential — cp313 wheels cover the
 # common scientific stack (numpy, scipy, pandas, numba). If a
