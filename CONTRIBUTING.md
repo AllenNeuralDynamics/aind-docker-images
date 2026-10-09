@@ -31,12 +31,19 @@ In every image:
   installers: uv from `ghcr.io/astral-sh/uv`, Miniforge from
   `condaforge/miniforge3`, ffmpeg from `mwader/static-ffmpeg`. Never use
   Miniconda, whose default channel is under Anaconda's commercial terms.
-- Pin every `FROM` to a version tag, so Dependabot can bump it.
+- Pin every `FROM` to a version tag and its digest (`image:tag@sha256:...`).
+  Upstreams rebuild tags in place, so only the digest fixes what a rebuild
+  gets; Dependabot bumps both.
 - Install apt packages with `--no-install-recommends`, then remove
   `/var/lib/apt/lists`.
-- If the image installs torch, jax or tensorflow, pin its Python packages in a
-  `requirements.txt` beside the `Dockerfile`, so rebuilds reproduce it and bumps
-  arrive as reviewable diffs.
+- If the image installs Python packages, list its direct dependencies in a
+  `pyproject.toml` beside the `Dockerfile` as lower bounds (`torch>=2.14.1`),
+  commit the `uv.lock` that `uv lock` writes, and install the lock with hashes
+  into the conda environment, as `jax-jupyterlab` does. conda installs only the
+  interpreter. Rebuilds then reproduce the whole tree. Dependabot groups minor
+  and patch updates into one PR and opens a separate PR for each major. Leave
+  apt packages unpinned: Ubuntu drops superseded versions, so pins break the
+  build.
 - Open the `Dockerfile` with a comment saying what the image is for and why its
   base was chosen, and keep it current.
 - Set the OCI labels `org.opencontainers.image.source`, `.description` and
