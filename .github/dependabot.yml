@@ -78,6 +78,21 @@ updates:
       docker-pytorch-r:
         patterns:
           - "*"
+    ignore:
+      # A new CUDA major raises the host driver floor; move it by hand.
+      - dependency-name: "nvidia/cuda"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: "pip"
+    directory: "/pytorch-py310"
+    schedule:
+      interval: "weekly"
+    cooldown:
+      default-days: 7
+    groups:
+      pip-pytorch:
+        patterns:
+          - "*"
 
   - package-ecosystem: "docker"
     directories:
