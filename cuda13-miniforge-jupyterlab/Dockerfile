@@ -11,11 +11,14 @@
 # so nothing pulls from Anaconda's commercially licensed `defaults`.
 # Need nvcc? `conda install cuda-nvcc` from conda-forge.
 
-# Stage 1: a ready-made /opt/conda, copied into the runtime stage.
-FROM docker.io/condaforge/miniforge3:26.7.2-0 AS miniforge
+# Stage 1: uv, mounted only while installing the locked packages.
+FROM ghcr.io/astral-sh/uv:0.12.23@sha256:61d393e44e249f2e4b526b6c7ddcecce245946826e608e11c93ad4f5bba55b21 AS uv
 
-# Stage 2: runtime
-FROM docker.io/nvidia/cuda:13.4.2-base-ubuntu26.04
+# Stage 2: a ready-made /opt/conda, copied into the runtime stage.
+FROM quay.io/condaforge/miniforge3:26.7.2-0@sha256:16eff7459a31bed2d395b1df0dca220c067a3a9527981ec87dbbde2eafe474e5 AS miniforge
+
+# Stage 3: runtime
+FROM nvcr.io/nvidia/cuda:13.4.2-base-ubuntu26.04@sha256:ac2289b83fba0b38cddf6513f3703d132135ae070cc1b7c63234b90dca4c60f2
 
 LABEL org.opencontainers.image.source="https://github.com/AllenNeuralDynamics/aind-docker-images"
 LABEL org.opencontainers.image.description="CUDA 13.4 base + Miniforge + JupyterLab."
@@ -34,7 +37,15 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=miniforge ${CONDA_DIR} ${CONDA_DIR}
-RUN conda install -y python=3.13 jupyterlab notebook \
+RUN conda install -y python=3.13 \
  && conda clean -afy \
  && echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> /etc/skel/.bashrc \
  && echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> ~/.bashrc
+
+# pyproject.toml lists the direct dependencies and uv.lock pins the full
+# tree with hashes; conda provides only the interpreter.
+COPY pyproject.toml uv.lock /tmp/env/
+RUN --mount=from=uv,source=/uv,target=/bin/uv \
+    uv export --frozen --no-cache --project /tmp/env -o /tmp/env/requirements.txt \
+ && uv pip install --no-cache --python ${CONDA_DIR}/bin/python --require-hashes -r /tmp/env/requirements.txt \
+ && rm -rf /tmp/env /tmp/uv-*.lock
