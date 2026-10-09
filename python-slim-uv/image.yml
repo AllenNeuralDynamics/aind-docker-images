@@ -1,0 +1,10 @@
+starter_environment: true
+title: Python Slim + uv
+version: Python 3.13, uv 0.11.7, Debian 13 (trixie)
+description: >-
+  Minimal CPU-only base: python:3.13-slim-trixie with a uv-managed venv at
+  /opt/venv. For pipeline roles (launchers, aggregators, CPU-only workers)
+  where an interactive IDE image only adds cold-start latency.
+tags: [python3.13, uv, debian trixie]
+language: Python
+gpu: false
