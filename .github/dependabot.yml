@@ -21,7 +21,7 @@ updates:
       - "/python-slim-uv"
       - "/ubuntu-ffmpeg"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     cooldown:
       default-days: 7
     groups:
@@ -40,7 +40,7 @@ updates:
       - "/lightning-jupyterlab"
       - "/tensorflow-jupyterlab"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     cooldown:
       default-days: 7
     groups:
@@ -61,7 +61,7 @@ updates:
     # Raise pyproject.toml's lower bound with each update and relock.
     versioning-strategy: "increase"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     cooldown:
       default-days: 7
     groups:
