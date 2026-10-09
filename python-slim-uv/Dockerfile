@@ -15,10 +15,10 @@
 # For GPU-capable roles use cuda13-base-uv.
 
 # Stage 1: uv binary, pulled from Astral's distroless image.
-FROM ghcr.io/astral-sh/uv:0.12.23 AS uv
+FROM ghcr.io/astral-sh/uv:0.12.23@sha256:61d393e44e249f2e4b526b6c7ddcecce245946826e608e11c93ad4f5bba55b21 AS uv
 
 # Stage 2: Docker Official Python image, Debian trixie slim.
-FROM docker.io/python:3.13-slim-trixie
+FROM public.ecr.aws/docker/library/python:3.13-slim-trixie@sha256:70729b46c69b4f1e97c4822c1af3df53a1476cf5ddc6c087c0c10bc3a5678c2f
 
 LABEL org.opencontainers.image.source="https://github.com/AllenNeuralDynamics/aind-docker-images"
 LABEL org.opencontainers.image.description="python:3.13-slim-trixie + uv. Minimal CPU-only base for AIND capsules."
