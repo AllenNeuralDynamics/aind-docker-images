@@ -71,10 +71,15 @@ container starts with a GPU.
 
 ## Testing
 
-There are no tests; build the image and run it.
+A Code Ocean image has a `test.sh` that runs inside the built image and checks
+what a capsule relies on: the interpreter and environment, the bundled tools,
+and for a GPU framework image, that the framework is its CUDA build. On a pull
+request, `.github/workflows/test_images.yml` builds every changed image and runs
+its `test.sh`. Hosted runners have no GPU, so check a GPU image on a GPU machine
+before merging a change to its CUDA or framework versions.
 
 ```
 docker build -t <image>:dev ./<image>
-docker run --rm <image>:dev python -c "import sys; print(sys.version)"
+docker run --rm -i <image>:dev bash -s < <image>/test.sh
 docker run --rm --gpus all <image>:dev nvidia-smi   # needs a GPU and nvidia-container-toolkit
 ```

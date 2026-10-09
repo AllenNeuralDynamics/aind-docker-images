@@ -1,0 +1,80 @@
+name: Test Docker images
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  detect-images:
+    runs-on: ubuntu-latest
+    outputs:
+      has_images: ${{ steps.images.outputs.has_images }}
+      matrix: ${{ steps.images.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: images
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          # HEAD is the PR merged into its base, so this diff is the PR's change.
+          selected_images=()
+          while read -r image_name; do
+            [[ -f "$image_name/Dockerfile" ]] && selected_images+=("$image_name")
+          done < <(git diff --name-only "$BASE_SHA" HEAD | awk -F/ 'NF > 1 { print $1 }' | sort -u)
+
+          matrix=$(printf '%s\n' "${selected_images[@]}" | jq -Rsc \
+            'split("\n") | map(select(length > 0) | {image_name: .}) | {include: .}')
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          if [[ ${#selected_images[@]} -gt 0 ]]; then
+            echo "has_images=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_images=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  test:
+    needs: detect-images
+    if: needs.detect-images.outputs.has_images == 'true'
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: ${{ matrix.image_name }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.detect-images.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Free runner disk
+        # The CUDA framework images need more than the runner's default free space.
+        run: |
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL
+          df -h /
+      - name: Build image
+        run: docker build -t "$IMAGE_NAME:test" "./$IMAGE_NAME"
+      - name: Run smoke test
+        run: |
+          if [[ ! -f "$IMAGE_NAME/test.sh" ]]; then
+            echo "::notice::$IMAGE_NAME has no test.sh; build only."
+            exit 0
+          fi
+          docker run --rm -i "$IMAGE_NAME:test" bash -s < "$IMAGE_NAME/test.sh"
+
+  # The check to require on main: it reports on every PR, including those that
+  # change no image and so skip the test matrix.
+  result:
+    name: Test result
+    needs: [detect-images, test]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          for result in $RESULTS; do
+            if [[ "$result" != success && "$result" != skipped ]]; then
+              echo "::error::A job ended with '$result'."
+              exit 1
+            fi
+          done
