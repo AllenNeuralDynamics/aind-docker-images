@@ -32,10 +32,13 @@ language: Python            # Python, R, MATLAB or C/C++
 gpu: true                   # Code Ocean machine type
 ```
 
-The form's version line is left out, since it changes with every dependency
-update; take it from the built image when registering. For the same reason,
-name a version in `description` or `tags` only where changing it would mean a
-new image: the CUDA major and the Python minor.
+Code Ocean groups an image's releases under its title and shows each one's
+version in parentheses after it, so keep versions out of `title` and never
+change it: a new title starts a new environment. The form's version line is left
+out, since it changes with every dependency update; take it from the built image
+when registering. For the same reason, name a version in `description` or `tags`
+only where changing it would mean a new image: the CUDA major and the Python
+minor.
 
 ## Recipes
 
