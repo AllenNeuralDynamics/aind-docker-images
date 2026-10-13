@@ -27,13 +27,15 @@ starter_environment: true   # false keeps the file but skips registration
 title: JAX JupyterLab
 description: >-
   One or two sentences on what the image holds and who it is for.
-tags: [Python, JAX, JupyterLab, CUDA 13, GPU, ubuntu 26.04]
+tags: [Python, JAX, JupyterLab, CUDA 13, GPU]
 language: Python            # Python, R, MATLAB or C/C++
 gpu: true                   # Code Ocean machine type
 ```
 
 The form's version line is left out, since it changes with every dependency
-update; take it from the built image when registering.
+update; take it from the built image when registering. For the same reason,
+name a version in `description` or `tags` only where changing it would mean a
+new image: the CUDA major and the Python minor.
 
 ## Recipes
 
