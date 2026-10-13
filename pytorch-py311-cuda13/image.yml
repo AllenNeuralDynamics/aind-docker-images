@@ -1,0 +1,9 @@
+starter_environment: true
+title: PyTorch (Python 3.11)
+description: >-
+  PyTorch, torchvision and torchaudio with JupyterLab, on Miniforge
+  (conda-forge) and Python 3.11 at /opt/conda, for capsules whose
+  dependencies do not yet support newer Python. Needs a T4 or newer GPU.
+tags: [Python, PyTorch, JupyterLab, CUDA 13, GPU, python3.11]
+language: Python
+gpu: true

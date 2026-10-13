@@ -8,7 +8,7 @@
 /python-slim-uv/ @galenlynch @AllenNeuralDynamics/data-infrastructure
 /ubuntu-ffmpeg/ @galenlynch @AllenNeuralDynamics/data-infrastructure
 
-/pytorch-py310/ @tmchartrand @AllenNeuralDynamics/data-infrastructure
+/pytorch-py311-cuda13/ @tmchartrand @AllenNeuralDynamics/data-infrastructure
 /r2u-rstudio/ @tmchartrand @AllenNeuralDynamics/data-infrastructure
 
 /cuda13-miniforge-jupyterlab/ @galenlynch @tmchartrand @AllenNeuralDynamics/data-infrastructure

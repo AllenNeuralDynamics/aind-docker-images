@@ -1,4 +1,4 @@
-# JupyterLab with PyTorch on Python 3.10, for capsules whose dependencies
+# JupyterLab with PyTorch on Python 3.11, for capsules whose dependencies
 # do not yet support newer Python; otherwise use lightning-jupyterlab.
 # Built on NVIDIA CUDA 13 `base` + Miniforge (conda-forge).
 #
@@ -9,13 +9,13 @@
 # the check at container start.
 
 # Stage 1: a ready-made /opt/conda, copied into the runtime stage.
-FROM docker.io/condaforge/miniforge3:26.7.2-0 AS miniforge
+FROM quay.io/condaforge/miniforge3:26.7.2-0@sha256:16eff7459a31bed2d395b1df0dca220c067a3a9527981ec87dbbde2eafe474e5 AS miniforge
 
 # Stage 2: runtime
-FROM docker.io/nvidia/cuda:13.4.2-base-ubuntu26.04
+FROM nvcr.io/nvidia/cuda:13.4.2-base-ubuntu26.04@sha256:ac2289b83fba0b38cddf6513f3703d132135ae070cc1b7c63234b90dca4c60f2
 
 LABEL org.opencontainers.image.source="https://github.com/AllenNeuralDynamics/aind-docker-images"
-LABEL org.opencontainers.image.description="CUDA 13.4 base + Miniforge + JupyterLab, with PyTorch on Python 3.10."
+LABEL org.opencontainers.image.description="CUDA 13 base + Miniforge + JupyterLab, with PyTorch on Python 3.11."
 LABEL org.opencontainers.image.licenses="MIT"
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -31,7 +31,7 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=miniforge ${CONDA_DIR} ${CONDA_DIR}
-RUN conda install -y python=3.10 jupyterlab notebook \
+RUN conda install -y python=3.11 jupyterlab notebook \
  && conda clean -afy \
  && echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> /etc/skel/.bashrc \
  && echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> ~/.bashrc

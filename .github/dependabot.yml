@@ -68,7 +68,7 @@ updates:
 
   - package-ecosystem: "docker"
     directories:
-      - "/pytorch-py310"
+      - "/pytorch-py311-cuda13"
       - "/r2u-rstudio"
     schedule:
       interval: "weekly"
@@ -84,7 +84,7 @@ updates:
         update-types: ["version-update:semver-major"]
 
   - package-ecosystem: "pip"
-    directory: "/pytorch-py310"
+    directory: "/pytorch-py311-cuda13"
     schedule:
       interval: "weekly"
     cooldown:
