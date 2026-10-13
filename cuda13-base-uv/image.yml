@@ -1,0 +1,10 @@
+starter_environment: true
+title: CUDA 13 base + uv
+description: >-
+  Minimal GPU base: the NVIDIA CUDA 13 base image with a uv-managed Python
+  3.13 venv at /opt/venv. For capsules that pip-install torch, jax[cuda13] or
+  cupy-cuda13x, whose wheels bring their own CUDA libraries; install an
+  nvidia-*-cu13 package for any other. Needs a T4 or newer GPU.
+tags: [uv, CUDA 13, GPU, python3.13]
+language: Python
+gpu: true
