@@ -5,7 +5,8 @@ python -c "import sys; assert sys.prefix == \"/opt/conda\", sys.prefix; assert s
 conda --version
 jupyter lab --version
 pip check
-# Without the CUDA plugin, jax installs and silently runs on CPU.
+# jax falls back to CPU with only a warning if the CUDA plugin is missing or
+# does not match jaxlib.
 python - <<'PY'
 from importlib.metadata import version
 import jax
