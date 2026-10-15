@@ -6,5 +6,6 @@ description: >-
   cupy-cuda13x, whose wheels bring their own CUDA libraries; install an
   nvidia-*-cu13 package for any other. Needs a T4 or newer GPU.
 tags: [uv, CUDA 13, GPU, python3.13]
+key_packages: [uv]
 language: Python
 gpu: true
