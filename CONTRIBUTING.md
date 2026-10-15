@@ -28,6 +28,7 @@ title: JAX JupyterLab
 description: >-
   One or two sentences on what the image holds and who it is for.
 tags: [Python, JAX, JupyterLab, CUDA 13, GPU]
+key_packages: [jax]         # Python distributions or commands named in the version
 language: Python            # Python, R, MATLAB or C/C++
 gpu: true                   # Code Ocean machine type
 ```
@@ -38,10 +39,22 @@ major and Python minor included, and never change it: a new title starts a new
 environment. A new CUDA major or Python minor gets a new directory here but
 registers as a new version under the same title.
 
-The form's version line is left out, since it changes with every dependency
-update; take it from the built image when registering. For the same reason, name
-a version in `description` or `tags` only where changing it would mean a new
-image: the CUDA major and the Python minor.
+The version is left out of `image.yml`, since it changes with every dependency
+update. For the same reason, name a version in `description` or `tags` only
+where changing it would mean a new image: the CUDA major and the Python minor.
+
+To request a registration, run
+
+```
+uv run scripts/registration_request.py <image>...
+```
+
+It prints the form's fields for the image that `latest` points to, named by its
+commit tag, since Code Ocean requires each deployed source to be unique. The
+version lists the versions of `key_packages` that the image's `FROM` tags,
+`requirements.txt` or `uv.lock` pin at that commit, then CUDA, Python and the
+release month, which keeps it unique when nothing pinned has changed; an
+unpinned package is left out.
 
 ## Recipes
 

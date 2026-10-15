@@ -4,5 +4,6 @@ description: >-
   Ubuntu with static ffmpeg and ffprobe builds, and Miniforge
   (conda-forge) with Python 3.13 at /opt/conda.
 tags: [ffmpeg, ffprobe]
+key_packages: [ffmpeg]
 language: Python
 gpu: false
