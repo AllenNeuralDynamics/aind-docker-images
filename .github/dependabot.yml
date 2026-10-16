@@ -31,6 +31,9 @@ updates:
       # Image names encode the CUDA major, so a new major is a new image.
       - dependency-name: "nvidia/cuda"
         update-types: ["version-update:semver-major"]
+      # New Python minors lag in wheels; move python-slim-uv by hand.
+      - dependency-name: "docker/library/python"
+        update-types: ["version-update:semver-minor"]
 
   - package-ecosystem: "docker"
     directories:
