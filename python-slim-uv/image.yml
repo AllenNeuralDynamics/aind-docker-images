@@ -6,5 +6,6 @@ description: >-
   CPU-only workers) where an interactive IDE image only adds cold-start
   latency.
 tags: [python3.13, uv]
+key_packages: [uv]
 language: Python
 gpu: false
