@@ -34,7 +34,9 @@ In every image:
 - Avoid Docker Hub where an image has another registry: `nvcr.io/nvidia/cuda`,
   `quay.io/condaforge/miniforge3`, and `public.ecr.aws/docker/library/` for
   Docker's official images. Docker Hub rate-limits anonymous pulls, and CI and
-  Dependabot pull anonymously.
+  Dependabot pull anonymously. ECR Public throttles too, so a failed CI build
+  retries with those images from `mirror.gcr.io`, which can't be the `FROM`
+  itself because Dependabot reads no tags there.
 - Pin every `FROM` to a version tag and its digest (`image:tag@sha256:...`).
   Upstreams rebuild tags in place, so only the digest fixes what a rebuild
   gets; Dependabot bumps both.
