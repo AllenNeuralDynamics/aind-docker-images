@@ -29,14 +29,24 @@ In every image:
 
 - Copy tools in with `COPY --from=<pinned image>` rather than downloading
   installers: uv from `ghcr.io/astral-sh/uv`, Miniforge from
-  `condaforge/miniforge3`, ffmpeg from `mwader/static-ffmpeg`. Never use
+  `quay.io/condaforge/miniforge3`, ffmpeg from `mwader/static-ffmpeg`. Never use
   Miniconda, whose default channel is under Anaconda's commercial terms.
-- Pin every `FROM` to a version tag, so Dependabot can bump it.
+- Avoid Docker Hub where an image has another registry: `nvcr.io/nvidia/cuda`,
+  `quay.io/condaforge/miniforge3`, and `public.ecr.aws/docker/library/` for
+  Docker's official images. Docker Hub rate-limits anonymous pulls, and CI and
+  Dependabot pull anonymously.
+- Pin every `FROM` to a version tag and its digest (`image:tag@sha256:...`).
+  Upstreams rebuild tags in place, so only the digest fixes what a rebuild
+  gets; Dependabot bumps both.
 - Install apt packages with `--no-install-recommends`, then remove
   `/var/lib/apt/lists`.
-- If the image installs torch, jax or tensorflow, pin its Python packages in a
-  `requirements.txt` beside the `Dockerfile`, so rebuilds reproduce it and bumps
-  arrive as reviewable diffs.
+- If the image installs Python packages, prefer locking the whole tree with a
+  `pyproject.toml` and `uv.lock`, installed with hashes into the conda
+  environment as `jax-jupyterlab` does: a lock makes a commit-tagged image
+  rebuildable, and transitive updates arrive in their own PRs. At minimum, pin
+  direct dependencies exactly in a `requirements.txt` (`torch==2.14.1`).
+  Dependabot bumps either. Leave apt packages unpinned: Ubuntu drops
+  superseded versions, so pins break the build.
 - Open the `Dockerfile` with a comment saying what the image is for and why its
   base was chosen, and keep it current.
 - Set the OCI labels `org.opencontainers.image.source`, `.description` and
