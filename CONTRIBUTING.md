@@ -17,6 +17,14 @@ To add an image, create its directory, list it under `docker` in
 `.github/dependabot.yml`, and give it an owner in `.github/CODEOWNERS`. Do not
 add a workflow.
 
+`.github/workflows/merge_dependabot.yml` merges a Dependabot PR once its image
+tests pass, if every update in it is a minor or patch version, and publishes
+the images it changed. GPU frameworks and CUDA (`torch`, `torchvision`,
+`torchaudio`, `jax`, `jaxlib`, `tensorflow`, `nvidia-*` and `nvidia/cuda`) merge
+on a patch only, since the tests run without a GPU and a minor release can drop
+a GPU architecture or need a newer driver. Majors, PRs with commits by anyone
+else, and updates to `aind-airflow` wait for review.
+
 ## Code Ocean registration
 
 An image offered as a Code Ocean starter environment has an `image.yml` that
