@@ -60,7 +60,17 @@ jobs:
           sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup /opt/hostedtoolcache/CodeQL
           df -h /
       - name: Build image
-        run: docker build -t "$IMAGE_NAME:test" "./$IMAGE_NAME"
+        run: |
+          # On failure, retry once with ECR Public's Docker Hub images pulled from
+          # mirror.gcr.io: their digest pins make them identical, and the retry
+          # rides out other registry outages. The Dockerfile keeps ECR, since
+          # Dependabot can't read tags from the mirror.
+          if ! docker build -t "$IMAGE_NAME:test" "./$IMAGE_NAME"; then
+            echo "::warning::Build failed; retrying in 60 s with ECR Public bases from mirror.gcr.io."
+            sleep 60
+            sed 's|public\.ecr\.aws/docker/library/|mirror.gcr.io/library/|' "$IMAGE_NAME/Dockerfile" \
+              | docker build -f - -t "$IMAGE_NAME:test" "./$IMAGE_NAME"
+          fi
       - name: Run smoke test
         run: |
           if [[ ! -f "$IMAGE_NAME/test.sh" ]]; then
