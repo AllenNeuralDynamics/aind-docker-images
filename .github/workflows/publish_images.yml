@@ -36,18 +36,22 @@ jobs:
           IMAGE_NAME: ${{ inputs.image_name }}
         run: |
           excluded_images=(aind-airflow hortacloud-deployment)
+          # test.sh and image.yml are not in the build, so changing only them
+          # does not republish.
+          # shellcheck disable=SC2016
+          image_files='NF && !(NF == 2 && ($2 == "test.sh" || $2 == "image.yml")) { print $1 }'
 
           if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
             candidates=("$IMAGE_NAME")
           elif [[ "$PREVIOUS_SHA" =~ ^0+$ ]]; then
             mapfile -t candidates < <(
               git diff-tree --no-commit-id --name-only -r "$GITHUB_SHA" |
-                awk -F/ 'NF { print $1 }' | sort -u
+                awk -F/ "$image_files" | sort -u
             )
           else
             mapfile -t candidates < <(
               git diff --name-only "$PREVIOUS_SHA" "$GITHUB_SHA" |
-                awk -F/ 'NF { print $1 }' | sort -u
+                awk -F/ "$image_files" | sort -u
             )
           fi
 

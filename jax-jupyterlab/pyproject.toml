@@ -1,0 +1,17 @@
+# Direct dependencies of the image's /opt/conda environment, as lower
+# bounds that Dependabot raises; uv.lock pins the full tree and is what the
+# Dockerfile installs.
+[project]
+name = "jax-jupyterlab"
+version = "0"
+requires-python = "==3.13.*"
+dependencies = [
+    "jupyterlab>=4.6.4",
+    "notebook>=7.6.3",
+    "jax[cuda13]>=0.11.2",
+]
+
+[tool.uv]
+package = false
+# Lock only for the platform the image runs on.
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64'"]
