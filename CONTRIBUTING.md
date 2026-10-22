@@ -52,9 +52,10 @@ uv run scripts/registration_request.py <image>...
 It prints the form's fields for the image that `latest` points to, named by its
 commit tag, since Code Ocean requires each deployed source to be unique. The
 version lists the versions of `key_packages` that the image's `FROM` tags,
-`requirements.txt` or `uv.lock` pin at that commit, then CUDA, Python and the
-release month, which keeps it unique when nothing pinned has changed; an
-unpinned package is left out.
+`requirements.txt` or `uv.lock` pin at that commit, then CUDA and Python; an
+unpinned package is left out. A release that changes no key package repeats the
+last version, and Code Ocean rejects it as a duplicate; to register one anyway,
+pass `--release <name>` to end the version with that name.
 
 ## Recipes
 
