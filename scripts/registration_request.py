@@ -14,7 +14,6 @@ Usage: uv run scripts/registration_request.py <image-dir>... [--tag SHA]
 """
 
 import argparse
-import datetime
 import json
 import re
 import subprocess
@@ -139,7 +138,7 @@ def python_minor(commit: str, image: str) -> str:
     return found.pop()
 
 
-def request(image_dir: Path, tag: str | None, release: str) -> str:
+def request(image_dir: Path, tag: str | None, release: str | None) -> str:
     """Return the Markdown registration request for one image directory."""
     meta = yaml.safe_load((image_dir / "image.yml").read_text())
     image = image_dir.resolve().name
@@ -172,7 +171,8 @@ def request(image_dir: Path, tag: str | None, release: str) -> str:
     if "CUDA_VERSION" in env:
         parts.append("CUDA " + ".".join(env["CUDA_VERSION"].split(".")[:2]))
     parts.append(f"Python {python_minor(commit, image)}")
-    parts.append(release)
+    if release:
+        parts.append(release)
 
     fields = {
         "Name": meta["title"],
@@ -198,8 +198,8 @@ def main() -> None:
     )
     parser.add_argument(
         "--release",
-        default=datetime.datetime.now(datetime.UTC).strftime("%Y.%m"),
-        help="release name that ends the version (default: this year and month)",
+        help="name that ends the version, to tell apart releases that pin the same"
+        " key packages",
     )
     args = parser.parse_args()
     print("\n".join(request(d, args.tag, args.release) for d in args.image_dirs))
