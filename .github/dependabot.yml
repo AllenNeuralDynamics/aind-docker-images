@@ -2,11 +2,16 @@ version: 2
 
 # Docker updates get one entry per set of owners in .github/CODEOWNERS, so each
 # grouped PR goes to the people who can approve all of it.
+#
+# Every entry runs monthly. Rebasing is off because a rebase looks up digests
+# again and replaces the PR whenever main moves; comment `@dependabot rebase`
+# on a PR that conflicts.
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
+    rebase-strategy: "disabled"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     cooldown:
       default-days: 7
     groups:
@@ -19,6 +24,7 @@ updates:
       - "/cuda13-base-uv"
       - "/python-slim-uv"
       - "/ubuntu-ffmpeg"
+    rebase-strategy: "disabled"
     schedule:
       interval: "monthly"
     cooldown:
@@ -41,6 +47,7 @@ updates:
       - "/jax-jupyterlab"
       - "/lightning-jupyterlab"
       - "/tensorflow-jupyterlab"
+    rebase-strategy: "disabled"
     schedule:
       interval: "monthly"
     cooldown:
@@ -62,6 +69,7 @@ updates:
       - "/tensorflow-jupyterlab"
     # Raise pyproject.toml's lower bound with each update and relock.
     versioning-strategy: "increase"
+    rebase-strategy: "disabled"
     schedule:
       interval: "monthly"
     cooldown:
@@ -79,8 +87,9 @@ updates:
     directories:
       - "/pytorch-py311-cuda13"
       - "/r2u-rstudio"
+    rebase-strategy: "disabled"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     cooldown:
       default-days: 7
     groups:
@@ -94,8 +103,9 @@ updates:
 
   - package-ecosystem: "pip"
     directory: "/pytorch-py311-cuda13"
+    rebase-strategy: "disabled"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     cooldown:
       default-days: 7
     groups:
@@ -107,8 +117,9 @@ updates:
     directories:
       - "/aind-airflow"
       - "/hortacloud-deployment"
+    rebase-strategy: "disabled"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
     cooldown:
       default-days: 7
     groups:
