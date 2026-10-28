@@ -12,10 +12,10 @@
 # Need nvcc? `conda install cuda-nvcc` from conda-forge.
 
 # Stage 1: uv, mounted only while installing the locked packages.
-FROM ghcr.io/astral-sh/uv:0.13.4@sha256:9f130421e930bfbdc563c00740466603f8723158e90297d07957c2294640262b AS uv
+FROM ghcr.io/astral-sh/uv:0.13.6@sha256:af22a52f5eafef3d78e551599d405c02df61919d18028f0cea8eda93bc9986d0 AS uv
 
 # Stage 2: a ready-made /opt/conda, copied into the runtime stage.
-FROM quay.io/condaforge/miniforge3:26.7.2-0@sha256:16eff7459a31bed2d395b1df0dca220c067a3a9527981ec87dbbde2eafe474e5 AS miniforge
+FROM quay.io/condaforge/miniforge3:26.9.4-0@sha256:0a0bbf068fc591c719d7594f513cc0f2411988b1f6bddcdfa2095584585873f6 AS miniforge
 
 # Stage 3: runtime
 FROM nvcr.io/nvidia/cuda:13.4.3-base-ubuntu26.04@sha256:e2eb43e25d404e2c48716f80afdb8989a84c4da588f5509330322842084d97b0
