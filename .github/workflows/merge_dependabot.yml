@@ -1,0 +1,114 @@
+name: Merge Dependabot updates
+
+# Merges a Dependabot PR once its image tests pass, if every update in it is a
+# minor or patch version, then publishes the images it changed. A merge made
+# with GITHUB_TOKEN starts no push workflows, so this dispatches
+# publish_images.yml itself.
+on:
+  workflow_run:
+    workflows: [Test Docker images]
+    types: [completed]
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+jobs:
+  merge:
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.actor.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_REPO: ${{ github.repository }}
+      HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Merge minor and patch updates
+        id: merge
+        run: |
+          pr=$(gh pr list --head "$HEAD_BRANCH" --author app/dependabot \
+            --json number,headRefOid \
+            --jq ".[] | select(.headRefOid == \"$HEAD_SHA\") | .number")
+          if [[ -z "$pr" ]]; then
+            echo "::notice::No open Dependabot PR is at $HEAD_SHA."
+            exit 0
+          fi
+
+          # The update metadata comes from Dependabot's commit messages, so it
+          # describes the diff only if Dependabot wrote every commit.
+          authors=$(gh pr view "$pr" --json commits \
+            --jq '[.commits[].authors[].login] | unique | join(" ")')
+          if [[ "$authors" != "dependabot[bot]" ]]; then
+            echo "::notice::#$pr has commits by $authors; leaving it for review."
+            exit 0
+          fi
+
+          mapfile -t files < <(gh pr view "$pr" --json files --jq '.files[].path')
+          # The airflow image is deployed by hand; its owners merge its updates.
+          if printf '%s\n' "${files[@]}" | grep -q '^aind-airflow/'; then
+            echo "::notice::#$pr changes aind-airflow; leaving it for review."
+            exit 0
+          fi
+
+          # One "<dependency> <update type>" line per update.
+          mapfile -t updates < <(gh pr view "$pr" --json commits \
+            --jq '.commits[].messageBody' | awk '
+              /^ *- dependency-name: / { name = $NF }
+              /^ *update-type: / { print name, $NF }' | sort -u)
+          if [[ ${#updates[@]} -eq 0 ]]; then
+            echo "::notice::#$pr states no update type; leaving it for review."
+            exit 0
+          fi
+          for update in "${updates[@]}"; do
+            read -r dependency update_type <<< "$update"
+            case "$update_type" in
+              version-update:semver-patch) ;;
+              version-update:semver-minor)
+                # Tests run without a GPU, and a minor release of these can drop
+                # a GPU architecture or need a newer driver.
+                case "$dependency" in
+                  torch | torchvision | torchaudio | jax | jaxlib | tensorflow | nvidia-* | nvidia/cuda)
+                    echo "::notice::#$pr updates $dependency to a new minor; leaving it for review."
+                    exit 0
+                    ;;
+                esac
+                ;;
+              *)
+                echo "::notice::#$pr includes a $update_type update of $dependency; leaving it for review."
+                exit 0
+                ;;
+            esac
+          done
+
+          # Branch protection may require an approval; GITHUB_TOKEN can give one
+          # only where the repository lets Actions approve pull requests.
+          gh pr review "$pr" --approve --body "Minor and patch updates; image tests passed."
+          gh pr merge "$pr" --squash --match-head-commit "$HEAD_SHA"
+
+          images=$(printf '%s\n' "${files[@]}" | awk -F/ 'NF > 1 { print $1 }' | sort -u)
+          {
+            echo "images<<EOF"
+            echo "$images"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v7
+        if: steps.merge.outputs.images != ''
+        with:
+          ref: main
+      - name: Publish changed images
+        if: steps.merge.outputs.images != ''
+        env:
+          IMAGES: ${{ steps.merge.outputs.images }}
+        run: |
+          # publish_images.yml rejects a dispatch for anything but a standard
+          # image; hortacloud-deployment publishes through its own workflow.
+          while read -r image_name; do
+            [[ -f "$image_name/Dockerfile" && "$image_name" != hortacloud-deployment ]] || continue
+            gh workflow run publish_images.yml --ref main \
+              -f image_name="$image_name" -f publish_latest=true
+          done <<< "$IMAGES"
