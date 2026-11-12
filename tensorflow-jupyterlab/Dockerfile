@@ -33,7 +33,9 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=miniforge ${CONDA_DIR} ${CONDA_DIR}
-RUN conda install -y python=3.13 \
+# Pin conda to the Miniforge release so that swapping Python does not upgrade it.
+RUN echo "conda ==$(conda --version | cut -d' ' -f2)" >> ${CONDA_DIR}/conda-meta/pinned \
+ && conda install -y python=3.13 \
  && conda clean -afy \
  && echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> /etc/skel/.bashrc \
  && echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> ~/.bashrc
