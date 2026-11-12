@@ -67,7 +67,7 @@ jobs:
             echo "::notice::$IMAGE_NAME has no test.sh; build only."
             exit 0
           fi
-          docker run --rm -i "$IMAGE_NAME:test" bash -s < "$IMAGE_NAME/test.sh"
+          docker run --rm -i "$IMAGE_NAME:test" bash -s < "$IMAGE_NAME/test.sh" 2>&1
 
   # The check to require on main: it reports on every PR, including those that
   # change no image and so skip the test matrix.
