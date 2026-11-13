@@ -1,0 +1,21 @@
+{
+	"inputs": [
+		{
+		"type": "promptString",
+		"id": "codeocean-token",
+		"description": "Code Ocean API Key", 
+		"password": true
+		}
+	],
+	"servers": {
+		"codeocean": {
+			"type": "stdio",
+			"command": "codeocean-mcp-server",
+			"env": {
+				"CODEOCEAN_DOMAIN": "https://codeocean.acme.com",
+				"CODEOCEAN_TOKEN": "${input:codeocean-token}",
+				"AGENT_ID": "VS Code"
+			}
+		}
+	}
+}
