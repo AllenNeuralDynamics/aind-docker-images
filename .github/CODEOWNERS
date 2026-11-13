@@ -10,6 +10,7 @@
 
 /pytorch-py311-cuda13/ @tmchartrand @AllenNeuralDynamics/data-infrastructure
 /r2u-rstudio/ @tmchartrand @AllenNeuralDynamics/data-infrastructure
+/code-server/ @tmchartrand @AllenNeuralDynamics/data-infrastructure
 
 /cuda13-miniforge-jupyterlab/ @galenlynch @tmchartrand @AllenNeuralDynamics/data-infrastructure
 /jax-jupyterlab/ @galenlynch @tmchartrand @AllenNeuralDynamics/data-infrastructure
