@@ -95,6 +95,9 @@ In every image:
   direct dependencies exactly in a `requirements.txt` (`torch==2.14.1`).
   Dependabot bumps either. Leave apt packages unpinned: Ubuntu drops
   superseded versions, so pins break the build.
+- For developer tools that won't directly touch data, strict build reproducibility 
+  is less critical. Prefer pinned versions and hash-verified installations, but 
+  this can be relaxed if it simplifies the build and maintenance process.
 - Open the `Dockerfile` with a comment saying what the image is for and why its
   base was chosen, and keep it current.
 - Set the OCI labels `org.opencontainers.image.source`, `.description` and

@@ -1,9 +1,10 @@
 starter_environment: true
-title: code-server python base image
+title: code-server python extensions pack
 description: >-
   Includes python, uv, and code-server with recommended settings, python
-  development extensions, copilot, and codeocean-mcp-server.
-tags: [Python, VS Code, code-server]
-key_packages: [code-server, codeocean-mcp-server]
+  development extensions, copilot, the Claude Code CLI and extension, and
+  codeocean-mcp-server.
+tags: [Python, VS Code, code-server, Claude Code, copilot]
+key_packages: [code-server, claude]
 language: Python
 gpu: false
