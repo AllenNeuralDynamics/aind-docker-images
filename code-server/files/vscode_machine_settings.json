@@ -2,13 +2,10 @@
     // Do not edit, settings provided by base image
     // override at the user or workspace level instead
     "chat.useAgentSkills": true,
-    "chat.useNestedAgentsMdFiles": true,
+    "chat.useNestedAgentsMdFiles": false,
     "chat.useClaudeHooks": true,
     "inlineChat.notebookAgent": true,
-    "github.copilot.chat.notebook.enhancedNextEditSuggestions.enabled": true,
     "github.copilot.chat.notebook.followCellExecution.enabled": true,
-    "github.copilot.nextEditSuggestions.enabled": true,
-    "jupyter.notebookFileRoot": "/code",
     "git.useIntegratedAskPass": false,
     "github.gitAuthentication": false,
     "remote.autoForwardPortsSource": "hybrid",
@@ -16,5 +13,11 @@
         "functionReturnTypes": false,
         "variableTypes": false
     },
-    "python.languageServer": "None"
+    "python.languageServer": "None",
+    "files.watcherExclude": {
+        "**/data/**": true
+    },
+    "search.exclude": {
+        "**/data/**": true
+    }
 }
