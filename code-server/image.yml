@@ -1,0 +1,9 @@
+starter_environment: true
+title: code-server python base image
+description: >-
+  Includes python, uv, and code-server with recommended settings, python
+  development extensions, copilot, and codeocean-mcp-server.
+tags: [Python, VS Code, code-server]
+key_packages: [code-server, codeocean-mcp-server]
+language: Python
+gpu: false
