@@ -113,9 +113,33 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build image and push to GitHub Container Registry
+        id: build
+        continue-on-error: true
         uses: docker/build-push-action@v7
         with:
           context: ./${{ matrix.image_name }}
+          push: true
+          tags: |
+            ghcr.io/allenneuraldynamics/${{ matrix.image_name }}:${{ env.docker_tag }}
+            ${{ env.PUBLISH_LATEST == 'true' && format('ghcr.io/allenneuraldynamics/{0}:latest', matrix.image_name) || '' }}
+      # Same retry as test_images.yml: ECR Public's Docker Hub images come from
+      # mirror.gcr.io, identical by digest, and other registry outages get a
+      # second try.
+      - name: Point ECR Public bases at mirror.gcr.io
+        if: steps.build.outcome == 'failure'
+        env:
+          IMAGE_NAME: ${{ matrix.image_name }}
+        run: |
+          echo "::warning::Build failed; retrying in 60 s with ECR Public bases from mirror.gcr.io."
+          sleep 60
+          sed 's|public\.ecr\.aws/docker/library/|mirror.gcr.io/library/|' \
+            "$IMAGE_NAME/Dockerfile" > "$RUNNER_TEMP/Dockerfile"
+      - name: Retry build and push
+        if: steps.build.outcome == 'failure'
+        uses: docker/build-push-action@v7
+        with:
+          context: ./${{ matrix.image_name }}
+          file: ${{ runner.temp }}/Dockerfile
           push: true
           tags: |
             ghcr.io/allenneuraldynamics/${{ matrix.image_name }}:${{ env.docker_tag }}
