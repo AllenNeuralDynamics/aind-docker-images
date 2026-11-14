@@ -2,7 +2,7 @@ starter_environment: true
 title: JAX JupyterLab
 description: >-
   JAX with CUDA 13 and JupyterLab, on Miniforge (conda-forge) and Python 3.13
-  at /opt/conda. Needs a T4 or newer GPU.
+  at /opt/conda/envs/py. Needs a T4 or newer GPU.
 tags: [Python, JAX, JupyterLab, CUDA 13, GPU]
 key_packages: [jax]
 language: Python
