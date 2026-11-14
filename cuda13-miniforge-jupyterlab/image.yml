@@ -2,7 +2,7 @@ starter_environment: true
 title: CUDA JupyterLab
 description: >-
   JupyterLab on the NVIDIA CUDA 13 base image, with Miniforge (conda-forge)
-  and Python 3.13 at /opt/conda. A starting point for installing GPU
+  and Python 3.13 at /opt/conda/envs/py. A starting point for installing GPU
   frameworks with conda or pip. Needs a T4 or newer GPU.
 tags: [Python, JupyterLab, CUDA 13, GPU]
 key_packages: [jupyterlab]

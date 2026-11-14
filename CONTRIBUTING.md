@@ -69,9 +69,14 @@ pass `--release <name>` to end the version with that name.
 
 Default to conda, since uv is not yet well integrated with Code Ocean: copy
 Miniforge to `/opt/conda` and activate `base` in `.bashrc`, as `ubuntu-ffmpeg`
-does. Use uv only for images whose users manage packages with uv themselves:
-create a venv at `/opt/venv` and point `python`, `python3`, `pip` and `pip3` in
-`/usr/local/bin` into it, as `python-slim-uv` does.
+does. An image that installs Python packages puts them in a conda env named `py`
+instead, since `base` holds conda's own dependencies, and makes `py` the target
+of later installs, as `jax-jupyterlab` does: `CONDA_PREFIX` and `PATH` point at
+it, `.bashrc` activates it, and `prefix_data_interoperability` keeps a capsule's
+`conda install` from replacing the packages uv installed. Use uv only for images
+whose users manage packages with uv themselves: create a venv at `/opt/venv` and
+point `python`, `python3`, `pip` and `pip3` in `/usr/local/bin` into it, as
+`python-slim-uv` does.
 
 In every image:
 

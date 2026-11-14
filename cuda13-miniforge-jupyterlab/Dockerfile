@@ -26,7 +26,12 @@ LABEL org.opencontainers.image.licenses="MIT"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV CONDA_DIR=/opt/conda
-ENV PATH=${CONDA_DIR}/bin:${PATH}
+# Python packages go in env py, since base holds conda's own dependencies.
+# CONDA_PREFIX makes py the target of conda and uv in shells that never ran
+# conda activate, such as the RUN lines of a capsule's Dockerfile.
+ENV CONDA_PREFIX=${CONDA_DIR}/envs/py
+ENV CONDA_DEFAULT_ENV=py
+ENV PATH=${CONDA_PREFIX}/bin:${CONDA_DIR}/bin:${PATH}
 # The base image mounts only compute and utility; video adds NVDEC/NVENC.
 ENV NVIDIA_DRIVER_CAPABILITIES=compute,video,utility
 
@@ -37,17 +42,20 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=miniforge ${CONDA_DIR} ${CONDA_DIR}
-# Pin conda to the Miniforge release so that swapping Python does not upgrade it.
+# Pin conda to the Miniforge release so that no later install upgrades it.
+# prefix_data_interoperability makes conda count the packages uv installs
+# rather than install its own copies over them.
 RUN echo "conda ==$(conda --version | cut -d' ' -f2)" >> ${CONDA_DIR}/conda-meta/pinned \
- && conda install -y python=3.13 \
+ && conda config --system --set prefix_data_interoperability true \
+ && conda create -y -n py python=3.13 \
  && conda clean -afy \
- && echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> /etc/skel/.bashrc \
- && echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate base" >> ~/.bashrc
+ && echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate py" >> /etc/skel/.bashrc \
+ && echo ". ${CONDA_DIR}/etc/profile.d/conda.sh && conda activate py" >> ~/.bashrc
 
 # pyproject.toml lists the direct dependencies and uv.lock pins the full
 # tree with hashes; conda provides only the interpreter.
 COPY pyproject.toml uv.lock /tmp/env/
 RUN --mount=from=uv,source=/uv,target=/bin/uv \
     uv export --frozen --no-cache --project /tmp/env -o /tmp/env/requirements.txt \
- && uv pip install --no-cache --python ${CONDA_DIR}/bin/python --require-hashes -r /tmp/env/requirements.txt \
+ && uv pip install --no-cache --python ${CONDA_PREFIX}/bin/python --require-hashes -r /tmp/env/requirements.txt \
  && rm -rf /tmp/env /tmp/uv-*.lock
