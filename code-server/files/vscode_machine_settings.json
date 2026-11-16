@@ -1,0 +1,23 @@
+{
+    // Do not edit, settings provided by base image
+    // override at the user or workspace level instead
+    "chat.useAgentSkills": true,
+    "chat.useNestedAgentsMdFiles": false,
+    "chat.useClaudeHooks": true,
+    "inlineChat.notebookAgent": true,
+    "github.copilot.chat.notebook.followCellExecution.enabled": true,
+    "git.useIntegratedAskPass": false,
+    "github.gitAuthentication": false,
+    "remote.autoForwardPortsSource": "hybrid",
+    "python.analysis.inlayHints": {
+        "functionReturnTypes": false,
+        "variableTypes": false
+    },
+    "python.languageServer": "None",
+    "files.watcherExclude": {
+        "**/data/**": true
+    },
+    "search.exclude": {
+        "**/data/**": true
+    }
+}
