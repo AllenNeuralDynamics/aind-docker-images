@@ -2,7 +2,7 @@
 FROM docker.io/mwader/static-ffmpeg:9.0.2-1@sha256:f5d100184884eb3e82b0eb14bb5ebf98da99826ac824989720297fb9ef21c822 AS ffmpeg
 
 # Stage 2: get miniforge
-FROM quay.io/condaforge/miniforge3:26.7.2-0@sha256:16eff7459a31bed2d395b1df0dca220c067a3a9527981ec87dbbde2eafe474e5 AS miniforge
+FROM quay.io/condaforge/miniforge3:26.9.4-2@sha256:dd37613f34cef9ff9953667e83ec743851499db51ed641911e12b860b2e439b5 AS miniforge
 
 # Stage 3: runtime
 FROM public.ecr.aws/docker/library/ubuntu:26.04@sha256:c098726dd9b9733f3e885f8de0ef375206a311b0a317eadc40d347b1115fb944

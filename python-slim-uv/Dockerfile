@@ -15,7 +15,7 @@
 # For GPU-capable roles use cuda13-base-uv.
 
 # Stage 1: uv binary, pulled from Astral's distroless image.
-FROM ghcr.io/astral-sh/uv:0.13.4@sha256:9f130421e930bfbdc563c00740466603f8723158e90297d07957c2294640262b AS uv
+FROM ghcr.io/astral-sh/uv:0.13.8@sha256:5cc1805e2426484abca4ad46ea783bab281fdb225fd82d8ce6d66a81254bac85 AS uv
 
 # Stage 2: Docker Official Python image, Debian trixie slim.
 FROM public.ecr.aws/docker/library/python:3.13-slim-trixie@sha256:cf50a4f6ac4f026458b08d5222023d700ac806410dff5e9ca8728fa44f2b850f
