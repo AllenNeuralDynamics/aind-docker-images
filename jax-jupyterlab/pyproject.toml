@@ -6,8 +6,8 @@ name = "jax-jupyterlab"
 version = "0"
 requires-python = "==3.13.*"
 dependencies = [
-    "jupyterlab>=4.6.4",
-    "notebook>=7.6.3",
+    "jupyterlab>=4.6.6",
+    "notebook>=7.6.5",
     "jax[cuda13]>=0.11.2",
 ]
 
