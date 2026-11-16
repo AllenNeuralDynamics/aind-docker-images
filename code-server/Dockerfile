@@ -11,10 +11,10 @@
 # dotfiles if $DOTFILES_REPO is set.
 
 # Stage 1: uv, kept in the image for capsules that manage packages with it.
-FROM ghcr.io/astral-sh/uv:0.13.4@sha256:9f130421e930bfbdc563c00740466603f8723158e90297d07957c2294640262b AS uv
+FROM ghcr.io/astral-sh/uv:0.13.8@sha256:5cc1805e2426484abca4ad46ea783bab281fdb225fd82d8ce6d66a81254bac85 AS uv
 
 # Stage 2: a ready-made /opt/conda, copied into the runtime stage.
-FROM quay.io/condaforge/miniforge3:26.7.2-0@sha256:16eff7459a31bed2d395b1df0dca220c067a3a9527981ec87dbbde2eafe474e5 AS miniforge
+FROM quay.io/condaforge/miniforge3:26.9.4-2@sha256:dd37613f34cef9ff9953667e83ec743851499db51ed641911e12b860b2e439b5 AS miniforge
 
 # Stage 3: code-server's release image, which holds its bundled Node.
 FROM ghcr.io/coder/code-server:4.145.2@sha256:09565f9e07f5624554e295e8bab0e2fec4a7c533eb3cff459ed6596a4d3d7c1c AS code-server
