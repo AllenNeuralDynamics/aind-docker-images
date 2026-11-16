@@ -18,10 +18,10 @@
 # type).
 
 # Stage 1: uv binary, pulled from Astral's distroless image.
-FROM ghcr.io/astral-sh/uv:0.13.4@sha256:9f130421e930bfbdc563c00740466603f8723158e90297d07957c2294640262b AS uv
+FROM ghcr.io/astral-sh/uv:0.13.8@sha256:5cc1805e2426484abca4ad46ea783bab281fdb225fd82d8ce6d66a81254bac85 AS uv
 
 # Stage 2: `base` on CUDA 13.4 / Ubuntu 26.04
-FROM nvcr.io/nvidia/cuda:13.4.3-base-ubuntu26.04@sha256:e2eb43e25d404e2c48716f80afdb8989a84c4da588f5509330322842084d97b0
+FROM nvcr.io/nvidia/cuda:13.5.0-base-ubuntu26.04@sha256:2b8fc7b402eb045b809c3bb6296853e7d6e99a5acaded62b28f9494b357fbb4f
 
 LABEL org.opencontainers.image.source="https://github.com/AllenNeuralDynamics/aind-docker-images"
 LABEL org.opencontainers.image.description="CUDA 13.4 base + uv-managed Python 3.13. Minimal GPU base for AIND capsules that install pytorch/jax/cupy via pip."
