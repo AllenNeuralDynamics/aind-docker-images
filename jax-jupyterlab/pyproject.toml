@@ -1,4 +1,4 @@
-# Direct dependencies of the image's /opt/conda environment, as lower
+# Direct dependencies of the image's py environment, as lower
 # bounds that Dependabot raises; uv.lock pins the full tree and is what the
 # Dockerfile installs.
 [project]
