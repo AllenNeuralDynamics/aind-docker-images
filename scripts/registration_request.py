@@ -109,7 +109,8 @@ def pinned_versions(commit: str, image: str) -> dict[str, str]:
 
     A ``FROM`` tag versions the tool its image is named for, without any
     ``static-`` prefix; ``requirements.txt`` pins direct Python packages, and
-    ``uv.lock`` the whole tree, each overriding the one before.
+    ``uv.lock`` the whole tree except the project itself, each overriding the
+    one before.
     """
     versions: dict[str, str] = {}
     for line in file_at(commit, f"{image}/Dockerfile").splitlines():
@@ -122,7 +123,9 @@ def pinned_versions(commit: str, image: str) -> dict[str, str]:
             versions[normalize(match[1])] = match[2]
     lock = file_at(commit, f"{image}/uv.lock")
     for package in tomllib.loads(lock).get("package", []) if lock else []:
-        if "version" in package:
+        # The project itself is locked too, as a placeholder version that can
+        # share a name with a tool, such as code-server.
+        if "version" in package and "virtual" not in package["source"]:
             versions[normalize(package["name"])] = package["version"]
     return versions
 
