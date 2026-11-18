@@ -3,6 +3,7 @@
 set -euo pipefail
 python -c "import sys; assert sys.prefix == \"/opt/conda\", sys.prefix; assert sys.version_info[:2] == (3, 13), sys.version"
 conda --version
+mamba --version
 uv --version
 code-server --version
 claude --version

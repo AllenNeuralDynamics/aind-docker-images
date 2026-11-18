@@ -124,6 +124,9 @@ updates:
       docker-code-server:
         patterns:
           - "*"
+    ignore:
+      # Held at 26.5.3 for now; move by hand.
+      - dependency-name: "condaforge/miniforge3"
 
   - package-ecosystem: "uv"
     directory: "/code-server"
